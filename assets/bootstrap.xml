@@ -109,8 +109,7 @@
 								<ndp-proxy>
 									<enabled>no</enabled>
 								</ndp-proxy>
-								<interface-management-profile>mgmt
-								</interface-management-profile>
+								<interface-management-profile>mgmt</interface-management-profile>
 								<lldp>
 									<enable>no</enable>
 								</lldp>
@@ -129,8 +128,7 @@
 								<ndp-proxy>
 									<enabled>no</enabled>
 								</ndp-proxy>
-								<interface-management-profile>mgmt
-								</interface-management-profile>
+								<interface-management-profile>mgmt</interface-management-profile>
 								<lldp>
 									<enable>no</enable>
 								</lldp>
