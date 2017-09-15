@@ -70,6 +70,89 @@
             "Description": "WebServer EC2 instance type",
             "Type": "String"
         },
+        "SplunkInstanceType": {
+            "AllowedValues": [
+                "c4.large",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "m4.10xlarge",
+                "r4.8xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type.",
+            "Description": "Splunk Instance Type",
+            "Default": "c4.large",
+            "Type": "String"
+        },
+        "SHCEnabled": {
+            "AllowedValues": [
+                "yes",
+                "no"
+            ],
+            "Default": "no",
+            "Description": "Do you want to build a Splunk search head cluster?",
+            "Type": "String"
+        },
+        "SplunkAdminPassword": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
+            "Description": "Admin password for Splunk. Must be at least 8 characters containing letters, numbers and symbols.",
+            "MaxLength": "32",
+            "MinLength": "6",
+            "NoEcho": "true",
+            "Type": "String"
+        },
+        "SplunkIndexerCount": {
+            "ConstraintDescription": "must be a valid number, 3-10",
+            "Default": "3",
+            "Description": "How many Splunk indexers to launch.  [3-10]",
+            "MaxValue": "10",
+            "MinValue": "3",
+            "Type": "Number"
+        },
+        "SplunkIndexerDiskSize": {
+            "ConstraintDescription": "must be a valid number, 50-16000",
+            "Default": "200",
+            "Description": "The size of the attached EBS volume to the Splunk indexers.  (in GB)",
+            "MaxValue": "16000",
+            "MinValue": "50",
+            "Type": "Number"
+        },
+        "SplunkLicenseBucket": {
+            "Default": "",
+            "Description": "Name of private S3 bucket with licenses to be accessed via authenticated requests",
+            "Type": "String"
+        },
+        "SplunkLicensePath": {
+            "Default": "",
+            "Description": "Path to license file in S3 Bucket (without leading '/')",
+            "Type": "String"
+        },
+        "SplunkReplicationFactor": {
+            "ConstraintDescription": "must be a valid number, 2-5",
+            "Default": "3",
+            "Description": "How many copies of data should be stored in the Splunk clusters",
+            "MaxValue": "5",
+            "MinValue": "2",
+            "Type": "Number"
+        },
+        "SplunkSecret": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
+            "Description": "Shared cluster secret for Search Head and Indexer clusters. Must be at least 8 characters containing letters, numbers and symbols.",
+            "MaxLength": "32",
+            "MinLength": "6",
+            "NoEcho": "true",
+            "Type": "String"
+        },
+        "HTTPLocation": {
+            "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
+            "ConstraintDescription": "Must be a valid IP range in x.x.x.x/x notation.  Use 0.0.0.0/0 for no restrictions.",
+            "Description": "The IP address range that is allowed to connect to the Splunk web interface. Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
+            "MaxLength": "19",
+            "MinLength": "9",
+            "Type": "String"
+        },
         "KeyDeLicense": {
             "Default": "",
             "Description": "Key used to de-license the PAN FW",
@@ -262,6 +345,7 @@
                         "MgmtSubnetIpBlocks",
                         "UntrustSubnetIpBlocks",
                         "TrustSubnetIpBlocks",
+                        "SplunkSubnetIpBlocks",
                         "NATGateway",
                         "NATGWSubnetIpBlocks",
                         "LambdaSubnetIpBlocks",
@@ -300,7 +384,7 @@
                 },
                 {
                     "Label": {
-                        "default": "Auto Scaling Group Configuration"
+                        "default": "Firewall Auto Scaling Configuration"
                     },
                     "Parameters": [
                         "ScalingParameter",
@@ -309,6 +393,23 @@
                         "MinInstancesASG",
                         "ScaleDownThreshold",
                         "ScaleUpThreshold"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Splunk Configuration"
+                    },
+                    "Parameters": [
+                        "SplunkInstanceType",
+                        "HTTPLocation",
+                        "SHCEnabled",
+                        "SplunkAdminPassword",
+                        "SplunkIndexerCount",
+                        "SplunkIndexerDiskSize",
+                        "SplunkLicenseBucket",
+                        "SplunkLicensePath",
+                        "SplunkReplicationFactor",
+                        "SplunkSecret"
                     ]
                 },
                 {
@@ -626,6 +727,95 @@
                 "VPCStack"
             ]
        	},
+      	"SplunkStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "DependsOn": [
+            	"VPCStack",
+            	"SplunkSubnetStack"
+            ],
+            "Properties": {
+                "TemplateURL": {
+                    "Fn::Sub": [
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-splunk-enterprise/templates/splunk-enterprise.template",
+                        {
+                            "QSS3Region": {
+                                "Fn::If": [
+                                    "GovCloudCondition",
+                                    "s3-us-gov-west-1",
+                                    "s3"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Parameters": {
+                    "VPCID": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "VPCCIDR": {
+                        "Ref": "VPCCIDR"
+                    },
+                    "PublicSubnet1ID": {
+                        "Fn::GetAtt": [
+                            "SplunkSubnetStack",
+                            "Outputs.SplunkSubnet1"
+                        ]
+                    },
+                    "PublicSubnet2ID": {
+                        "Fn::GetAtt": [
+                            "SplunkSubnetStack",
+                            "Outputs.SplunkSubnet2"
+                        ]
+                    },
+                    "InstanceType": {
+                        "Ref": "SplunkInstanceType"
+                    },
+                    "SplunkAdminPassword": {
+                        "Ref": "SplunkAdminPassword"
+                    },
+                    "SplunkSecret": {
+                        "Ref": "SplunkSecret"
+                    },
+                    "SplunkLicenseBucket": {
+                        "Ref": "SplunkLicenseBucket"
+                    },
+                    "SplunkLicensePath": {
+                        "Ref": "SplunkLicensePath"
+                    },
+                    "KeyName": {
+                        "Ref": "KeyName"
+                    },
+                    "SSHLocation": {
+                        "Ref": "SSHLocation"
+                    },
+                    "HTTPLocation": {
+                        "Ref": "HTTPLocation"
+                    },
+                    "SplunkIndexerCount": {
+                        "Ref": "SplunkIndexerCount"
+                    },
+                    "SHCEnabled": {
+                        "Ref": "SHCEnabled"
+                    },
+                    "SplunkIndexerDiskSize": {
+                        "Ref": "SplunkIndexerDiskSize"
+                    },
+                    "SplunkReplicationFactor": {
+                        "Ref": "SplunkReplicationFactor"
+                    },
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "QSS3KeyPrefix": {
+                        "Ref": "QSS3KeyPrefix"
+                    }
+                },
+                "TimeoutInMinutes": "60"
+            }
+        },
       	"WebserverStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
