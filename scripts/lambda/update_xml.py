@@ -16,7 +16,7 @@ def handler(event, context):
     logger.debug('event = {}'.format(event))
     
     if event['RequestType'] == 'Delete':
-        cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, "CustomResourcePhysicalID")
+        return cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, "CustomResourcePhysicalID")
     
     try:
         s3bucket = event['ResourceProperties']['xmlfile_bucket']
@@ -42,28 +42,28 @@ def handler(event, context):
             e_splunk_server.text = str(splunk_hostname)
         else:
             logger.error('splunk server element not found')
-            cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
+            return cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
         # Find splunk port element and update value
         e_splunk_port = root.findall("./shared/log-settings/syslog/entry/server/entry/port")[0]
         if e_splunk_port != None and e_splunk_port.text == 'PORT-REPLACE-ME':
             e_splunk_port.text = str(splunk_port)
         else:
             logger.error('splunk port element not found')
-            cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
+            return cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
         # Find splunk transport element and update value
         e_splunk_transport = root.findall("./shared/log-settings/syslog/entry/server/entry/transport")[0]
         if e_splunk_transport != None and e_splunk_transport.text == 'TRANSPORT-REPLACE-ME':
             e_splunk_transport.text = str(splunk_transport)
         else:
             logger.error('splunk transport element not found')
-            cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
+            return cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
             
         # Write back to a file
         doc.write(download_path, encoding='utf-8', xml_declaration=True)
         # Upload file back to S3
         s3_client.upload_file(download_path, s3bucket, '{}{}'.format(s3keyprefix, filename))
         
-        cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, "CustomResourcePhysicalID")
+        return cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, "CustomResourcePhysicalID")
     except Exception as err:
         logger.error(err)
-        cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
+        return cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID")
