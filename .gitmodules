@@ -1,7 +1,8 @@
 [submodule "submodules/quickstart-paloaltonetworks-vmsfirewall"]
 	path = submodules/quickstart-paloaltonetworks-vmsfirewall
-	url = git@github.com:aws-quickstart/quickstart-paloaltonetworks-vmsfirewall.git
+	url = https://github.com/aws-quickstart/quickstart-paloaltonetworks-vmsfirewall.git 
         branch = develop
 [submodule "submodules/quickstart-splunk-enterprise"]
 	path = submodules/quickstart-splunk-enterprise
-	url = git@github.com:aws-quickstart/quickstart-splunk-enterprise.git
+	url = https://github.com/aws-quickstart/quickstart-splunk-enterprise.git 
+        branch = develop
