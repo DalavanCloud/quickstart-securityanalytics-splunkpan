@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Splunk deployment with indexer, search head clustering and cluster master.",
+  "Description": "syslog-ng deployment to support Splunk/PAN Quickstart.",
   "Parameters": {
     "SplunkSyslogInstanceType": {
       "AllowedValues": [
@@ -26,6 +26,16 @@
     "ClusterMasterManagementURL": {
       "Default": "",
       "Description": "Cluster Master private IP URL",
+      "Type": "String"
+    },
+    "QSS3BucketName": {
+      "Default": "",
+      "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+      "Type": "String"
+    },
+    "QSS3KeyPrefix": {
+      "Default": "",
+      "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
       "Type": "String"
     },
     "NumberOfAZs": {
@@ -178,6 +188,7 @@
     "SplunkSyslogLoadBalancer": {
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
+        "LoadBalancerName": "sysng",
         "ConnectionDrainingPolicy": {
           "Enabled": true,
           "Timeout": 300
@@ -249,6 +260,139 @@
     },
     "SplunkSyslogLaunchConfiguration": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata": {
+        "Comment": "Install syslog-ng servers",
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "files": {
+              "/etc/syslog-ng/syslog-ng.conf": {
+                "source": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "https://",
+                      {
+                        "Ref": "QSS3BucketName"
+                      },
+                      ".s3.amazonaws.com/",
+                      {
+                        "Ref": "QSS3KeyPrefix"
+                      },
+                      "assets/syslog-ng.conf"
+                    ]
+                  ]
+                },
+                "mode": "000755",
+                "owner": "root",
+                "group": "root"
+              },
+              "/tmp/mo": {
+                "source": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "https://",
+                      {
+                        "Ref": "QSS3BucketName"
+                      },
+                      ".s3.amazonaws.com/",
+                      {
+                        "Ref": "QSS3KeyPrefix"
+                      },
+                      "assets/mo"
+                    ]
+                  ]
+                },
+                "mode": "000755",
+                "owner": "root",
+                "group": "root"
+              },
+              "/tmp/splunk-pan-syslog-app.tar.gz": {
+                "source": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "https://",
+                      {
+                        "Ref": "QSS3BucketName"
+                      },
+                      ".s3.amazonaws.com/",
+                      {
+                        "Ref": "QSS3KeyPrefix"
+                      },
+                      "assets/splunk-pan-syslog-app.tar.gz"
+                    ]
+                  ]
+                },
+                "mode": "000755",
+                "owner": "root",
+                "group": "root"
+              },
+              "/tmp/syslog_install.sh": {
+                "source": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "https://",
+                      {
+                        "Ref": "QSS3BucketName"
+                      },
+                      ".s3.amazonaws.com/",
+                      {
+                        "Ref": "QSS3KeyPrefix"
+                      },
+                      "scripts/syslog_install.sh"
+                    ]
+                  ]
+                },
+                "mode": "000755",
+                "owner": "root",
+                "group": "root"
+              },
+              "/tmp/variables.sh": {
+                "content": {
+                  "Fn::Join": ["", [
+                      "export SPLUNK_ADMIN_PASSWORD=\"",
+                      {
+                        "Ref": "SplunkAdminPassword"
+                      },
+                      "\"\n",
+                      "export SPLUNKINDEXERDISCOVERYSECRET=\"",
+                      {
+                        "Ref": "SplunkIndexerDiscoverySecret"
+                      },
+                      "\"\n",
+                      "export AWSSTACKNAME=\"",
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "\"\n",
+                      "export AWSREGION=\"",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "\"\n",
+                      "export ELBADDRESS=\"",
+                      {
+                        "Fn::GetAtt": [
+                          "SplunkSyslogLoadBalancer",
+                          "DNSName"
+                        ]
+                      },
+                      "\"\n",
+                      "export CLUSTERMASTERMANAGEMENTURL=\"",
+                      {
+                        "Ref": "ClusterMasterManagementURL"
+                      },
+                      "\"\n"
+                    ]
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "Properties": {
         "AssociatePublicIpAddress": true,
         "BlockDeviceMappings": [
@@ -285,119 +429,6 @@
         "KeyName": {
           "Ref": "KeyName"
         },
-        "Metadata": {
-          "Comment": "Install syslog-ng servers",
-          "AWS::CloudFormation::Init": {
-            "files": {
-              "/etc/syslog-ng/syslog-ng.conf": {
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "https://",
-                      {
-                        "Ref": "QSS3BucketName"
-                      },
-                      ".s3.amazonaws.com/",
-                      {
-                        "Ref": "QSS3KeyPrefix"
-                      },
-                      "/assets/syslog-ng.conf"
-                    ]
-                  ]
-                },
-                "mode": "000755",
-                "owner": "root",
-                "group": "root"
-              },
-              "/tmp/mo": {
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "https://",
-                      {
-                        "Ref": "QSS3BucketName"
-                      },
-                      ".s3.amazonaws.com/",
-                      {
-                        "Ref": "QSS3KeyPrefix"
-                      },
-                      "/assets/mo"
-                    ]
-                  ]
-                },
-                "mode": "000755",
-                "owner": "root",
-                "group": "root"
-              },
-              "/install.sh": {
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "https://",
-                      {
-                        "Ref": "QSS3BucketName"
-                      },
-                      ".s3.amazonaws.com/",
-                      {
-                        "Ref": "QSS3KeyPrefix"
-                      },
-                      "/scripts/install.sh"
-                    ]
-                  ]
-                },
-                "mode": "000755",
-                "owner": "root",
-                "group": "root"
-              },
-              "/tmp/variables.sh": {
-                "content": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "export SPLUNK_ADMIN_PASSWORD=\"",
-                      {
-                        "Ref": "SplunkAdminPassword"
-                      },
-                      "\"\n",
-                      "export SPLUNKINDEXERDISCOVERYSECRET=\"",
-                      {
-                        "Ref": "SplunkIndexerDiscoverySecret"
-                      },
-                      "\"\n",
-                      "export AWSSTACKNAME=\"",
-                      {
-                        "Ref": "AWS::StackName"
-                      },
-                      "\"\n",
-                      "export AWSREGION=\"",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      "\"\n",
-                      "export ELBADDRESS=\"",
-                      {
-                        "Fn::GetAtt": 
-                        [
-                          "SplunkSyslogLoadBalancer",
-                          "DNSName"
-                        ]
-                      },
-                      "\"\n",
-                      "export CLUSTERMASTERMANAGEMENTURL=\"",
-                      {
-                        "Ref": "ClusterMasterManagementURL"
-                      },
-                      "\"\n"
-                    ]
-                  ]
-                }
-              }
-            }
-          }
-        },
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -412,8 +443,21 @@
                 "export SPLUNK_USER=splunk\n",
                 "export SPLUNK_BIN=/opt/splunk/bin/splunk\n",
                 "export SPLUNK_HOME=/opt/splunk\n",
+                "/opt/aws/bin/cfn-init -v ",
+                "         --stack ",
+                {
+                  "Ref": "AWS::StackName"
+                },
+                  "         --resource SplunkSyslogLaunchConfiguration",
+                  "         --region ",
+                {
+                  "Ref": "AWS::Region"
+                },
+                "\n",
+                "rpm -e --nodeps rsyslog\n",
+                "yum -y --enablerepo=epel install syslog-ng syslog-ng-libnet\n",
                 "source /tmp/variables.sh\n",
-                "bash /tmp/splunk-pan-syslog.sh\n",
+                "bash /tmp/syslog_install.sh\n",
                 "rm -f /tmp/variables.sh /tmp/syslog_install.sh\n"
               ]
             ]
@@ -468,13 +512,16 @@
         "Tags": [
           {
             "Key": "Application",
-            "Value": {
-              "Ref": "AWS::StackId"
-            },
+            "Value": {"Ref": "AWS::StackId"},
             "PropagateAtLaunch": true
           },
           {
             "Key": "Role",
+            "Value": "splunk-syslog",
+            "PropagateAtLaunch": true
+          },
+          {
+            "Key": "Name",
             "Value": "splunk-syslog",
             "PropagateAtLaunch": true
           }

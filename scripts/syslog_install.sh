@@ -35,6 +35,7 @@ mkdir -p /var/log/syslog-ng
 service syslog-ng start
 
 # run templating on the splunk configs
+tar xvf /tmp/splunk-pan-syslog-app.tar.gz -C /opt/splunk/etc/apps && rm -f /tmp/splunk-pan-syslog-app.tar.gz
 cat $APPDIR/outputs.conf | /tmp/mo > $APPDIR/outputs.conf.new
 mv $APPDIR/outputs.conf.new $APPDIR/outputs.conf
 

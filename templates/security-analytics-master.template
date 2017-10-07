@@ -120,7 +120,37 @@
             "Default": "c4.large",
             "Type": "String"
         },
-        "SHCEnabled": {
+        "SplunkSyslogInstanceType": {
+            "AllowedValues": [
+                "c4.large",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "m4.10xlarge",
+                "r4.8xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type.",
+            "Description": "Splunk Syslog Instance Type",
+            "Default": "c4.large",
+            "Type": "String"
+        },
+        "SplunkSyslogInstanceCount": {
+		 	"ConstraintDescription": "must be a valid number, 2-10",
+		    "Default": "2",
+		    "Description": "How many Splunk syslog-ng servers to launch.  [2-10]",
+		    "MaxValue": "10",
+		    "MinValue": "2",
+		    "Type": "Number"
+    	},
+    	"SplunkSyslogDiskSize": {
+		    "ConstraintDescription": "must be a valid number, 100-16000",
+		    "Default": "100",
+		    "Description": "The size of the attached EBS volume to the Splunk syslog aggregator s.  (in GB)",
+		    "MaxValue": "16000",
+		    "MinValue": "100",
+		    "Type": "Number"
+    	},
+    	"SHCEnabled": {
             "AllowedValues": [
                 "yes",
                 "no"
@@ -359,9 +389,9 @@
         "SplunkTransport": {
             "AllowedValues": [
                 "UDP",
-                "SSL"
+                "TCP"
             ],
-            "Default": "UDP",
+            "Default": "TCP",
             "Description": "Transport protocol to send syslog over",
             "Type": "String"
         },
@@ -640,7 +670,10 @@
                         "Ref": "QSS3KeyPrefix"
                     },
                     "SplunkHostname": {
-                        "Ref": "SplunkHostname"
+                        "Fn::GetAtt": [
+		                    "SyslogStack",
+		                    "Outputs.PANSyslogTarget"
+		                ]
                     },
                     "SplunkPort": {
                         "Ref": "SplunkPort"
@@ -790,6 +823,104 @@
                 "VPCStack"
             ]
        	},
+      	"SyslogStack": {
+      		"Type": "AWS::CloudFormation::Stack",
+      		"DependsOn": [
+            	"SplunkSubnetStack"
+            ],
+            "Properties": {
+            	"TemplateURL": {
+                    "Fn::Sub": [
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/syslog.template",
+                        {
+                            "QSS3Region": {
+                                "Fn::If": [
+                                    "GovCloudCondition",
+                                    "s3-us-gov-west-1",
+                                    "s3"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Parameters": {
+                	"VPCID": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "VPCCIDR": {
+                        "Ref": "VPCCIDR"
+                    },
+                    "PublicSubnet1ID": {
+                        "Fn::GetAtt": [
+                            "SplunkSubnetStack",
+                            "Outputs.SplunkSubnet1"
+                        ]
+                    },
+                    "PublicSubnet2ID": {
+                        "Fn::GetAtt": [
+                            "SplunkSubnetStack",
+                            "Outputs.SplunkSubnet2"
+                        ]
+                    },
+                    "PublicSubnet3ID": {
+                        "Fn::If": [
+                            "CreateSubnetAz3",
+                            {
+                                "Fn::GetAtt": [
+                                    "SplunkSubnetStack",
+                            		"Outputs.SplunkSubnet3"
+                                ]
+                            },
+                            {
+                                "Fn::GetAtt": [
+                                    "SplunkSubnetStack",
+                            		"Outputs.SplunkSubnet2"
+                                ]
+                            }
+                        ]
+                    },
+                    "NumberOfAZs": {
+                        "Ref": "NumberOfAZs"
+                    },
+                    "SplunkSyslogInstanceType": {
+                    	"Ref": "SplunkSyslogInstanceType"
+                    },
+                    "SplunkIndexerDiscoverySecret": {
+                    	"Ref": "SplunkIndexerDiscoverySecret"
+                    },
+                    "ClusterMasterManagementURL": {
+                    	"Fn::GetAtt": [
+	                     	"SplunkStack",
+                      		"Outputs.ClusterMasterManagementURL"
+                    	]
+                    },
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "QSS3KeyPrefix": {
+                        "Ref": "QSS3KeyPrefix"
+                    },
+                    "SSHClientLocation": {
+                    	"Ref": "SSHLocation"
+                    },
+                    "KeyName": {
+                    	"Ref": "KeyName"
+                    },
+                    "SplunkAdminPassword": {
+                    	"Ref": "SplunkAdminPassword"
+                    },
+                    "SplunkSyslogInstanceCount": {
+                    	"Ref": "SplunkSyslogInstanceCount"
+                    },
+                    "SplunkSyslogDiskSize": {
+                    	"Ref": "SplunkSyslogDiskSize"
+                    }
+                }
+            }
+      	},
       	"SplunkStack": {
             "Type": "AWS::CloudFormation::Stack",
             "DependsOn": [
