@@ -61,7 +61,7 @@ def handler(event, context):
         # Write back to a file
         doc.write(download_path, encoding='utf-8', xml_declaration=True)
         # Upload file back to S3
-        s3_client.upload_file(download_path, s3bucket, '{}{}'.format(s3keyprefix, filename))
+        s3_client.upload_file(download_path, s3bucket, '{}{}'.format(s3keyprefix, filename), ExtraArgs={'ACL': 'public-read'})
         
         return cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, "CustomResourcePhysicalID")
     except Exception as err:

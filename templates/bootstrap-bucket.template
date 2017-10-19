@@ -1,0 +1,160 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Creates VPC, Subnets, Route Tables, SG, Classic ELBs, ASG for Webservers and Lambda Infrastructure for the VM-Series firewall",
+    "Parameters": {
+        "MasterS3Bucket": {
+            "Description": "Enter the name of the Bootstrap S3 bucket for the VM-Series firewall",
+            "MaxLength": "63",
+            "MinLength": "3",
+            "Type": "String",
+            "Default": "pan"
+        },
+        "SourceS3Bucket": {
+            "Description": "Enter the name of the Bootstrap S3 bucket for the VM-Series firewall",
+            "MaxLength": "63",
+            "MinLength": "3",
+            "Type": "String",
+            "Default": "pan-boot-euca1"
+        },
+        "QSS3BucketName": {
+            "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Default": "quickstart-reference",
+            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Type": "String"
+        },
+        "QSS3KeyPrefix": {
+            "AllowedPattern": "^[0-9a-zA-Z-/]*$",
+            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Default": "paloaltonetworks/vmsfirewall/latest/",
+            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Type": "String"
+        },
+        "SplunkHostname": {
+            "Default": "sys-ng.cluster.internal.elb.name",
+            "Description": "Splunk Indexer Hostname",
+            "Type": "String"
+        },
+        "SplunkPort": {
+            "Default": "514",
+            "Description": "Splunk syslog receiving port",
+            "Type": "String"
+        },
+        "SplunkTransport": {
+            "Default": "TCP",
+            "Description": "Splunk syslog receiving protocol",
+            "Type": "String"
+        }
+    },
+    "Mappings": {},
+    "Resources": {
+        "LambdaExecutionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "root",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents",
+                                        "logs:DescribeLogStreams"
+                                    ],
+                                    "Resource": "arn:aws:logs:*:*:*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:DeleteObject",
+                                        "s3:GetObject",
+                                        "s3:PutObject",
+                                        "s3:ListBucket",
+                                        "s3:PutObjectAcl"
+                                    ],
+                                    "Resource": "arn:aws:s3:::*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "CopyBootstrapFunc": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Handler": "copy-files.lambda_handler",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "LambdaExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "S3Key": {
+                        "Fn::Sub": "${QSS3KeyPrefix}scripts/copy-files.zip"
+                    }
+                },
+                "Runtime": "python3.6",
+                "Timeout": "30"
+            },
+            "DependsOn": [
+                "LambdaExecutionRole"
+            ]
+        },
+        "CopyBootstrapObjects": {
+            "Type": "AWS::CloudFormation::CustomResource",
+            "Properties": {
+                "ServiceToken": {
+                    "Fn::GetAtt": [
+                        "CopyBootstrapFunc",
+                        "Arn"
+                    ]
+                },
+                "TargetBucket": {
+                    "Ref": "MasterS3Bucket"
+                },
+                "SourceBucket": {
+                    "Ref": "SourceS3Bucket"
+                },
+                "splunk_hostname": {
+                    "Ref": "SplunkHostname"
+                },
+                "splunk_port": {
+                    "Ref": "SplunkPort"
+                },
+                "splunk_transport": {
+                    "Ref": "SplunkTransport"
+                }
+            },
+            "DependsOn": [
+                "CopyBootstrapFunc"
+            ]
+        }
+    },
+    "Outputs": {}
+}
