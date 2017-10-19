@@ -307,6 +307,27 @@
                 "owner": "root",
                 "group": "root"
               },
+              "/tmp/splunk-uf.rpm": {
+                 "source": {
+                   "Fn::Join": [
+                     "",
+                     [
+                       "https://",
+                       {
+                         "Ref": "QSS3BucketName"
+                       },
+                       ".s3.amazonaws.com/",
+                       {
+                         "Ref": "QSS3KeyPrefix"
+                       },
+                       "assets/splunk-uf.rpm"
+                     ]
+                   ]
+                 },
+                 "mode": "000755",
+                 "owner": "root",
+                 "group": "root"
+               },
               "/tmp/splunk-pan-syslog-app.tar.gz": {
                 "source": {
                   "Fn::Join": [
