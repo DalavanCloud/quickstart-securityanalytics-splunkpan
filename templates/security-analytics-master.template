@@ -276,12 +276,6 @@
             "Description": "Lambda Funcion Subnets for AZ: Comma-delimited list of CIDR blocks only if NAT Gateway is needed",
             "Type": "CommaDelimitedList"
         },
-        "MasterS3Bucket": {
-            "Description": "Enter the name of the Bootstrap S3 bucket for the VM-Series firewall",
-            "MaxLength": "63",
-            "MinLength": "3",
-            "Type": "String"
-        },
         "MaximumInstancesASG": {
             "Default": "3",
             "Description": "Maximum number of VM-Series firewalls in the ASG",
@@ -450,14 +444,6 @@
                 },
                 {
                     "Label": {
-                        "default": "Firewall Bootstrap S3 Bucket details"
-                    },
-                    "Parameters": [
-                        "MasterS3Bucket"
-                    ]
-                },
-                {
-                    "Label": {
                         "default": "VM-Series API Key"
                     },
                     "Parameters": [
@@ -546,9 +532,6 @@
                 "LambdaSubnetIpBlocks": {
                     "default": "Lambda Subnet CIDR Block:"
                 },
-                "MasterS3Bucket": {
-                    "default": "Bootstrap bucket for VM-Series firewalls"
-                },
                 "MaximumInstancesASG": {
                     "default": "Maximum VM-Series Instances:"
                 },
@@ -630,12 +613,12 @@
         }
     },
     "Resources": {
-    	"PanS3BucketStack": {
-        	"Type": "AWS::CloudFormation::Stack",
-          	"Properties": {
+    	"CreateBootstrapBucketStack": {
+    		"Type": "AWS::CloudFormation::Stack",
+    		"Properties": {
                 "TemplateURL": {
                     "Fn::Sub": [
-                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/update_pan_bootstrap.template",
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/s3-bucket.template",
                         {
                             "QSS3Region": {
                                 "Fn::If": [
@@ -648,11 +631,40 @@
                     ]
                 },
                 "Parameters": {
-                    "XmlFileBucket": {
-                        "Ref": "MasterS3Bucket"
+                    "MasterS3Bucket": "pan",
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
                     },
-                    "S3KeyPrefix": "config/",
-                    "XMLFileName": "bootstrap.xml",
+                    "QSS3KeyPrefix": {
+                        "Ref": "QSS3KeyPrefix"
+                    }
+                }
+            }
+    	},
+      	"PanBootstrapBucketStack": {
+    		"Type": "AWS::CloudFormation::Stack",
+    		"Properties": {
+                "TemplateURL": {
+                    "Fn::Sub": [
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/bootstrap-bucket.template",
+                        {
+                            "QSS3Region": {
+                                "Fn::If": [
+                                    "GovCloudCondition",
+                                    "s3-us-gov-west-1",
+                                    "s3"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Parameters": {
+                    "MasterS3Bucket": {
+                        "Fn::GetAtt": [
+		                    "CreateBootstrapBucketStack",
+		                    "Outputs.BootstrapS3Bucket"
+		                ]
+                    },
                     "QSS3BucketName": {
                         "Ref": "QSS3BucketName"
                     },
@@ -672,11 +684,11 @@
                 }
             },
             "DependsOn": [
-            	"SplunkSubnetStack",
-            	"SyslogStack"
+                "CreateBootstrapBucketStack",
+                "SyslogStack"
             ]
-       	},
-       	"VPCStack": {
+    	},
+      	"VPCStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -703,7 +715,10 @@
                         ]
                     },
                     "MasterS3Bucket": {
-                        "Ref": "MasterS3Bucket"
+                        "Fn::GetAtt": [
+		                    "CreateBootstrapBucketStack",
+		                    "Outputs.BootstrapS3Bucket"
+		                ]
                     },
                     "MgmtSubnetIpBlocks": {
                         "Fn::Join": [
@@ -1232,7 +1247,10 @@
                         "Ref": "ELBName"
                     },
                     "MasterS3Bucket": {
-                        "Ref": "MasterS3Bucket"
+                        "Fn::GetAtt": [
+		                    "CreateBootstrapBucketStack",
+		                    "Outputs.BootstrapS3Bucket"
+		                ]
                     },
                     "SSHLocation": {
                         "Ref": "SSHLocation"
@@ -1552,15 +1570,19 @@
             "DependsOn": [
                 "VPCStack",
                 "WebserverStack",
-                "PanS3BucketStack"
+                "PanBootstrapBucketStack",
+                "CreateBootstrapBucketStack"
             ]
         }
     },
     "Outputs": {
-        "BootstrapS3Bucket": {
+        "BootstrapBucket": {
             "Description": "Your Bootstrap bucket being used for this deployment",
             "Value": {
-                "Ref": "MasterS3Bucket"
+                "Fn::GetAtt": [
+                    "CreateBootstrapBucketStack",
+                    "Outputs.BootstrapS3Bucket"
+                ]
             }
         },
         "DNSNamePublicELB": {
