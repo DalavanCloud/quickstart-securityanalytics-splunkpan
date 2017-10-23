@@ -370,15 +370,6 @@
             "Description": "The period in seconds over which the average statistic is applied. Must be multiple of 60",
             "Type": "String"
         },
-        "SplunkTransport": {
-            "AllowedValues": [
-                "UDP",
-                "TCP"
-            ],
-            "Default": "TCP",
-            "Description": "Transport protocol to send syslog over",
-            "Type": "String"
-        },
         "SplunkSubnetIpBlocks": {
             "Default": "192.168.3.0/24, 192.168.13.0/24, 192.168.23.0/24",
             "Description": "Trust subnet comma-delimited list of CIDR blocks",
@@ -760,9 +751,7 @@
 		                ]
                     },
                     "SplunkPort": "514",
-                    "SplunkTransport": {
-                        "Ref": "SplunkTransport"
-                    }
+                    "SplunkTransport": "TCP"
                 }
             },
             "DependsOn": [
