@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Master template to launch Security Infra and Analytics solution",
+    "Description": "Workload template to launch Splunk and Palo Alto Networks Security Infrastructure and Analytics solution in an existing VPC. **WARNING** This template creates AWS resources. You will be billed for the AWS resources used if you create a stack from this template.(qs-1nq18dd9j)",
     "Parameters": {
         "AvailabilityZones": {
             "Description": "Enter the list of Availability Zones (Based on Number of AZs above)",
@@ -271,30 +271,15 @@
             "NoEcho": "true",
             "Type": "String"
         },
-        "LambdaSubnetIpBlocks": {
-            "Default": "192.168.200.0/24, 192.168.201.0/24, 192.168.202.0/24",
-            "Description": "Lambda Funcion Subnets for AZ: Comma-delimited list of CIDR blocks only if NAT Gateway is needed",
-            "Type": "CommaDelimitedList"
-        },
         "MaximumInstancesASG": {
             "Default": "3",
             "Description": "Maximum number of VM-Series firewalls in the ASG",
             "Type": "Number"
         },
-        "MgmtSubnetIpBlocks": {
-            "Default": "192.168.0.0/24, 192.168.10.0/24, 192.168.20.0/24",
-            "Description": "Management subnet comma-delimited list of CIDR blocks",
-            "Type": "CommaDelimitedList"
-        },
         "MinInstancesASG": {
             "Default": "1",
             "Description": "Minimum number of VM-Series firewalls in the ASG",
             "Type": "Number"
-        },
-        "NATGWSubnetIpBlocks": {
-            "Default": "192.168.100.0/24, 192.168.101.0/24, 192.168.102.0/24",
-            "Description": "AWS NAT Gateway Comma-delimited list of CIDR blocks",
-            "Type": "CommaDelimitedList"
         },
         "NATGateway": {
             "AllowedValues": [
@@ -315,7 +300,6 @@
         "PanFWLicenseType": {
             "AllowedValues": [
                 "Bring-your-own-license",
-                "Pay-as-you-go-bundle-1",
                 "Pay-as-you-go-bundle-2"
             ],
             "Default": "Pay-as-you-go-bundle-2",
@@ -370,33 +354,11 @@
             "Description": "The period in seconds over which the average statistic is applied. Must be multiple of 60",
             "Type": "String"
         },
-        "SplunkSubnetIpBlocks": {
-            "Default": "192.168.3.0/24, 192.168.13.0/24, 192.168.23.0/24",
-            "Description": "Trust subnet comma-delimited list of CIDR blocks",
-            "Type": "CommaDelimitedList"
-        },
-        "TrustSubnetIpBlocks": {
-            "Default": "192.168.2.0/24, 192.168.12.0/24, 192.168.22.0/24",
-            "Description": "Trust subnet comma-delimited list of CIDR blocks",
-            "Type": "CommaDelimitedList"
-        },
-        "UntrustSubnetIpBlocks": {
-            "Default": "192.168.1.0/24, 192.168.11.0/24, 192.168.21.0/24",
-            "Description": "Untrust subnet comma-delimited list of CIDR blocks",
-            "Type": "CommaDelimitedList"
-        },
         "VPCCIDR": {
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x.",
             "Default": "192.168.0.0/16",
             "Description": "Enter the VPC CIDR that you want to use",
-            "Type": "String"
-        },
-        "VPCName": {
-            "Default": "panwVPC",
-            "Description": "Name of the newly created VPC",
-            "MaxLength": "24",
-            "MinLength": "6",
             "Type": "String"
         },
         "NATSubnet1": {
@@ -490,15 +452,8 @@
                         "default": "VPC Configuration"
                     },
                     "Parameters": [
-                        "VPCName",
                         "VPCCIDR",
-                        "MgmtSubnetIpBlocks",
-                        "UntrustSubnetIpBlocks",
-                        "TrustSubnetIpBlocks",
-                        "SplunkSubnetIpBlocks",
                         "NATGateway",
-                        "NATGWSubnetIpBlocks",
-                        "LambdaSubnetIpBlocks",
                         "NumberOfAZs",
                         "AvailabilityZones"
                     ]
@@ -551,7 +506,16 @@
                         "SplunkLicenseBucket",
                         "SplunkLicensePath",
                         "SplunkReplicationFactor",
-                        "SplunkSecret"
+                        "SplunkSecret",
+                        "HECClientLocation",
+                        "IndexerApps",
+                        "SearchHeadApps",
+                        "IndexerInstanceType",
+                        "SearchHeadInstanceType",
+                        "SplunkIndexerDiscoverySecret",
+                        "SplunkSyslogDiskSize",
+                        "SplunkSyslogInstanceCount",
+                        "SplunkSyslogInstanceType"
                     ]
                 },
                 {
@@ -575,20 +539,77 @@
                 }
             ],
             "ParameterLabels": {
-                "AvailabilityZones": {
-                    "default": "Select list of AZ:"
+                "SplunkSyslogInstanceType": {
+                    "default": "Syslog Server Instance Type"
+                },
+                "SplunkSyslogInstanceCount": {
+                    "default": "Number of Syslog Servers"
+                },
+                "SplunkSyslogDiskSize": {
+                    "default": "Splunk Syslog Server Disk Size"
+                },
+                "SplunkIndexerDiscoverySecret": {
+                    "default": "Splunk Indexer Discovery Secret"
+                },
+                "SearchHeadInstanceType": {
+                    "default": "Search Head Instance Type"
+                },
+                "SplunkLicensePath": {
+                    "default": "Splunk License file path"
+                },
+                "SearchHeadApps": {
+                    "default": "Search Head Apps S3 URL"
+                },
+                "IndexerInstanceType": {
+                    "default": "Splunk Indexer Instance Type"
+                },
+                "IndexerApps": {
+                    "default": "Indexer Apps S3 URL"
+                },
+                "HECClientLocation": {
+                    "default": "HEC Client Location CIDR Block"
+                },
+                "SplunkSecret": {
+                    "default": "Splunk secret"
+                },
+                "SplunkReplicationFactor": {
+                    "default": "Splunk Index Replication Factor"
+                },
+                "SplunkLicenseBucket": {
+                    "default": "Splunk License S3 Bucket"
+                },
+                "SplunkIndexerDiskSize": {
+                    "default": "Splunk Indexer Disk Size"
+                },
+                "SplunkIndexerCount": {
+                    "default": "Number of Indexers"
+                },
+                "SplunkAdminPassword": {
+                    "default": "Splunk Enterprise Admin Password"
+                },
+                "SHCEnabled": {
+                    "default": "Enable Search Head Cluster"
+                },
+                "HTTPLocation": {
+                    "default": "HTTP CIDR Block"
+                },
+                "SplunkInstanceType": {
+                    "default": "Splunk Enterprise Instance Type"
+                },
+                "PanFWLicenseType": {
+                    "default": "Firewall License Type"
                 },
                 "ELBName": {
-                    "default": "Name of External Load Balancer:"
+                    "default": "Name of External Load Balancer"
                 },
                 "FWInstanceType": {
-                    "default": "Firewall Instance size:"
+                    "default": "Firewall Instance size"
                 },
                 "ILBName": {
-                    "default": "Name of Internal Load Balancer:"
+                    "default": "Name of Internal Load Balancer"
                 },
                 "InstanceType": {
-                    "default": "Instance Type of Web Servers behind ILB:"
+                    "default": "Instance Type of Web Servers behind ILB"
                 },
                 "KeyDeLicense": {
                     "default": "Key used to de-license the FW"
@@ -602,20 +623,11 @@
                 "KeyPANWPanorama": {
                     "default": "API Key for Panorama:"
                 },
-                "LambdaSubnetIpBlocks": {
-                    "default": "Lambda Subnet CIDR Block:"
-                },
                 "MaximumInstancesASG": {
                     "default": "Maximum VM-Series Instances:"
                 },
-                "MgmtSubnetIpBlocks": {
-                    "default": "Management Subnet CIDR Block:"
-                },
                 "MinInstancesASG": {
                     "default": "Minimum VM-Series Instances:"
-                },
-                "NATGWSubnetIpBlocks": {
-                    "default": "NAT Gateway Subnet CIDR Block:"
                 },
                 "NATGateway": {
                     "default": "Do you want to create AWS NAT Gateway in each Availability Zones (AZ)?"
@@ -644,17 +656,8 @@
                 "ScalingPeriod": {
                     "default": "Choose time in seconds for Scaling Period:"
                 },
-                "TrustSubnetIpBlocks": {
-                    "default": "Trust Subnet CIDR Block:"
-                },
-                "UntrustSubnetIpBlocks": {
-                    "default": "Untrust Subnet CIDR Block:"
-                },
                 "VPCCIDR": {
                     "default": "CIDR Block for the VPC:"
-                },
-                "VPCName": {
-                    "default": "VPC Name:"
                 }
             }
         }

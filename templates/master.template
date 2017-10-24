@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Master template to launch Splunk and Palo Alto Networks Security Infrastructure and Analytics solution",
+    "Description": "Master template to launch Splunk and Palo Alto Networks Security Infrastructure and Analytics solution in a new VPC. **WARNING** This template creates AWS resources. You will be billed for the AWS resources used if you create a stack from this template.(qs-1nq18dd9e)",
     "Parameters": {
         "AvailabilityZones": {
             "Description": "Enter the list of Availability Zones (Based on Number of AZs above)",
@@ -315,7 +315,6 @@
         "PanFWLicenseType": {
             "AllowedValues": [
                 "Bring-your-own-license",
-                "Pay-as-you-go-bundle-1",
                 "Pay-as-you-go-bundle-2"
             ],
             "Default": "Pay-as-you-go-bundle-2",
@@ -469,7 +468,16 @@
                         "SplunkLicenseBucket",
                         "SplunkLicensePath",
                         "SplunkReplicationFactor",
-                        "SplunkSecret"
+                        "SplunkSecret",
+                        "IndexerApps",
+                        "SearchHeadApps",
+                        "IndexerInstanceType",
+                        "SearchHeadInstanceType",
+                        "SplunkSyslogInstanceType",
+                        "SplunkSyslogInstanceCount",
+                        "SplunkSyslogDiskSize",
+                        "SplunkIndexerDiscoverySecret",
+                        "HECClientLocation"
                     ]
                 },
                 {
@@ -493,6 +501,69 @@
                 }
             ],
             "ParameterLabels": {
+                "SplunkSyslogInstanceType": {
+                    "default": "Syslog Server Instance Type"
+                },
+                "SplunkSyslogInstanceCount": {
+                    "default": "Number of Syslog Servers"
+                },
+                "SplunkSyslogDiskSize": {
+                    "default": "Splunk Syslog Server Disk Size"
+                },
+                "SplunkIndexerDiscoverySecret": {
+                    "default": "Splunk Indexer Discovery Secret"
+                },
+                "SearchHeadInstanceType": {
+                    "default": "Search Head Instance Type"
+                },
+                "SplunkLicensePath": {
+                    "default": "Splunk License file path"
+                },
+                "SearchHeadApps": {
+                    "default": "Search Head Apps S3 URL"
+                },
+                "IndexerInstanceType": {
+                    "default": "Splunk Indexer Instance Type"
+                },
+                "IndexerApps": {
+                    "default": "Indexer Apps S3 URL"
+                },
+                "HECClientLocation": {
+                    "default": "HEC Client Location CIDR Block"
+                },
+                "SplunkSecret": {
+                    "default": "Splunk secret"
+                },
+                "SplunkReplicationFactor": {
+                    "default": "Splunk Index Replication Factor"
+                },
+                "SplunkLicenseBucket": {
+                    "default": "Splunk License S3 Bucket"
+                },
+                "SplunkIndexerDiskSize": {
+                    "default": "Splunk Indexer Disk Size"
+                },
+                "SplunkIndexerCount": {
+                    "default": "Number of Indexers"
+                },
+                "SplunkAdminPassword": {
+                    "default": "Splunk Enterprise Admin Password"
+                },
+                "SHCEnabled": {
+                    "default": "Enable Search Head Cluster"
+                },
+                "HTTPLocation": {
+                    "default": "HTTP CIDR Block"
+                },
+                "SplunkInstanceType": {
+                    "default": "Splunk Enterprise Instance Type"
+                },
+                "PanFWLicenseType": {
+                    "default": "Firewall License Type"
+                },
+                "SplunkSubnetIpBlocks": {
+                    "default": "Splunk Enterprise CIDR Block"
+                },
                 "AvailabilityZones": {
                     "default": "Select list of AZ:"
                 },
