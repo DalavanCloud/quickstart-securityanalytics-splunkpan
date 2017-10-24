@@ -3,18 +3,11 @@
     "Description": "Creates VPC, Subnets, Route Tables, SG, Classic ELBs, ASG for Webservers and Lambda Infrastructure for the VM-Series firewall",
     "Parameters": {
         "MasterS3Bucket": {
+            "Default": "pan",
             "Description": "Enter the name of the Bootstrap S3 bucket for the VM-Series firewall",
             "MaxLength": "63",
             "MinLength": "3",
-            "Type": "String",
-            "Default": "pan"
-        },
-        "SourceS3Bucket": {
-            "Description": "Enter the name of the Bootstrap S3 bucket for the VM-Series firewall",
-            "MaxLength": "63",
-            "MinLength": "3",
-            "Type": "String",
-            "Default": "pan-boot-euca1"
+            "Type": "String"
         },
         "QSS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
@@ -28,6 +21,13 @@
             "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
             "Default": "paloaltonetworks/vmsfirewall/latest/",
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Type": "String"
+        },
+        "SourceS3Bucket": {
+            "Default": "pan-boot-euca1",
+            "Description": "Enter the name of the Bootstrap S3 bucket for the VM-Series firewall",
+            "MaxLength": "63",
+            "MinLength": "3",
             "Type": "String"
         },
         "SplunkHostname": {

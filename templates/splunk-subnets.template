@@ -159,8 +159,7 @@
                     }
                 ]
             },
-            "DependsOn": [
-            ]
+            "DependsOn": []
         },
         "SplunkSubnet2": {
             "Type": "AWS::EC2::Subnet",
@@ -211,8 +210,7 @@
                     }
                 ]
             },
-            "DependsOn": [
-            ]
+            "DependsOn": []
         },
         "SplunkSubnet3": {
             "Type": "AWS::EC2::Subnet",
@@ -264,8 +262,7 @@
                     }
                 ]
             },
-            "DependsOn": [
-            ]
+            "DependsOn": []
         },
         "SplunkSubnet4": {
             "Type": "AWS::EC2::Subnet",
@@ -317,8 +314,7 @@
                     }
                 ]
             },
-            "DependsOn": [
-            ]
+            "DependsOn": []
         },
         "SplunkRouteTable": {
             "Type": "AWS::EC2::RouteTable",
@@ -353,8 +349,7 @@
                     }
                 ]
             },
-            "DependsOn": [
-            ]
+            "DependsOn": []
         },
         "SplunkRoute": {
             "Type": "AWS::EC2::Route",

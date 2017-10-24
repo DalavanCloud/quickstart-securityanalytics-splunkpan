@@ -29,13 +29,13 @@
         "BootstrapBucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
-                "AccessControl" : "PublicRead",
+                "AccessControl": "PublicRead",
                 "BucketName": {
-                	"Fn::Join": [
+                    "Fn::Join": [
                         "-",
                         [
                             {
-                            	"Ref": "MasterS3Bucket"
+                                "Ref": "MasterS3Bucket"
                             },
                             {
                                 "Ref": "AWS::Region"
@@ -49,168 +49,188 @@
             }
         },
         "BootstrapBucketPolicy": {
-			"Type" : "AWS::S3::BucketPolicy",
-		   	"Properties" : {
-		      	"Bucket" : {"Ref": "BootstrapBucket"},
-		      	"PolicyDocument" : {
-				    "Version":"2012-10-17",
-				    "Statement": [
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/*"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/config/*"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/content/*"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/license/*"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/software/*"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/config"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/content"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/license"
-			                        ]
-			                    ]
-			                }
-				        },
-				        {
-				            "Effect":"Allow",
-				            "Principal": "*",
-				            "Action":["s3:GetObject"],
-				            "Resource":{
-			                	"Fn::Join": [
-			                        "",
-			                        [
-			                            "arn:aws:s3:::",
-			                            {
-			                            	"Ref": "BootstrapBucket"
-			                            },
-			                            "/software"
-			                        ]
-			                    ]
-			                }
-				        }
-				    ]
-				}
-	   		}        	
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+                "Bucket": {
+                    "Ref": "BootstrapBucket"
+                },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/*"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/config/*"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/content/*"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/license/*"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/software/*"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/config"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/content"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/license"
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "BootstrapBucket"
+                                        },
+                                        "/software"
+                                    ]
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
         }
     },
     "Outputs": {

@@ -31,11 +31,50 @@
             "Description": "Enter the instance type and size that you want for VM-Series firewall",
             "Type": "String"
         },
+        "HECClientLocation": {
+            "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
+            "ConstraintDescription": "Must be a valid IP range in x.x.x.x/x notation.  Use 0.0.0.0/0 for no restrictions.",
+            "Description": "The IP address range that is allowed to send data to Splunk HTTP Event Collector. Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
+            "MaxLength": "19",
+            "MinLength": "9",
+            "Type": "String"
+        },
+        "HTTPLocation": {
+            "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
+            "ConstraintDescription": "Must be a valid IP range in x.x.x.x/x notation.  Use 0.0.0.0/0 for no restrictions.",
+            "Description": "The IP address range that is allowed to connect to the Splunk web interface. Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
+            "MaxLength": "19",
+            "MinLength": "9",
+            "Type": "String"
+        },
         "ILBName": {
             "Default": "private-ilb",
             "Description": "Enter the name of the Internal Load Balancer",
             "MaxLength": "12",
             "MinLength": "3",
+            "Type": "String"
+        },
+        "IndexerApps": {
+            "Default": "",
+            "Description": "Comma separated list of URLs of Splunk App (or Add-on) tarballs (.spl) to pre-install on indexer(s)",
+            "Type": "CommaDelimitedList"
+        },
+        "IndexerInstanceType": {
+            "AllowedValues": [
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "m4.large",
+                "m4.xlarge",
+                "m4.2xlarge",
+                "m4.4xlarge",
+                "m4.10xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type.",
+            "Default": "c4.xlarge",
+            "Description": "EC2 instance type for Splunk Indexers",
             "Type": "String"
         },
         "InstanceType": {
@@ -70,182 +109,6 @@
             "Description": "WebServer EC2 instance type",
             "Type": "String"
         },
-        "IndexerInstanceType": {
-            "AllowedValues": [
-                "c4.large",
-                "c4.xlarge",
-                "c4.2xlarge",
-                "c4.4xlarge",
-                "c4.8xlarge",
-                "m4.large",
-                "m4.xlarge",
-                "m4.2xlarge",
-                "m4.4xlarge",
-                "m4.10xlarge"
-            ],
-            "Description": "EC2 instance type for Splunk Indexers",
-            "ConstraintDescription": "must be a valid EC2 instance type.",
-            "Default": "c4.xlarge",
-            "Type": "String"
-        },
-        "SearchHeadInstanceType": {
-            "AllowedValues": [
-                "c4.large",
-                "c4.xlarge",
-                "c4.2xlarge",
-                "c4.4xlarge",
-                "c4.8xlarge",
-                "r4.large",
-                "r4.xlarge",
-                "r4.2xlarge",
-                "r4.4xlarge",
-                "r4.8xlarge"
-            ],
-            "Description": "EC2 instance type for Splunk Search Heads",
-            "ConstraintDescription": "must be a valid EC2 instance type.",
-            "Default": "c4.xlarge",
-            "Type": "String"
-        },
-        "SplunkInstanceType": {
-            "AllowedValues": [
-                "c4.large",
-                "c4.2xlarge",
-                "c4.4xlarge",
-                "c4.8xlarge",
-                "m4.10xlarge",
-                "r4.8xlarge"
-            ],
-            "ConstraintDescription": "must be a valid EC2 instance type.",
-            "Description": "Splunk Instance Type",
-            "Default": "c4.large",
-            "Type": "String"
-        },
-        "SplunkSyslogInstanceType": {
-            "AllowedValues": [
-                "c4.large",
-                "c4.2xlarge",
-                "c4.4xlarge",
-                "c4.8xlarge",
-                "m4.10xlarge",
-                "r4.8xlarge"
-            ],
-            "ConstraintDescription": "must be a valid EC2 instance type.",
-            "Description": "Splunk Syslog Instance Type",
-            "Default": "c4.large",
-            "Type": "String"
-        },
-        "SplunkSyslogInstanceCount": {
-		 	"ConstraintDescription": "must be a valid number, 2-10",
-		    "Default": "2",
-		    "Description": "How many Splunk syslog-ng servers to launch.  [2-10]",
-		    "MaxValue": "10",
-		    "MinValue": "2",
-		    "Type": "Number"
-    	},
-    	"SplunkSyslogDiskSize": {
-		    "ConstraintDescription": "must be a valid number, 100-16000",
-		    "Default": "100",
-		    "Description": "The size of the attached EBS volume to the Splunk syslog aggregator s.  (in GB)",
-		    "MaxValue": "16000",
-		    "MinValue": "100",
-		    "Type": "Number"
-    	},
-    	"SHCEnabled": {
-            "AllowedValues": [
-                "yes",
-                "no"
-            ],
-            "Default": "no",
-            "Description": "Do you want to build a Splunk search head cluster?",
-            "Type": "String"
-        },
-        "SplunkAdminPassword": {
-            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
-            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
-            "Description": "Admin password for Splunk. Must be at least 8 characters containing letters, numbers and symbols.",
-            "MaxLength": "32",
-            "MinLength": "6",
-            "NoEcho": "true",
-            "Type": "String"
-        },
-        "SplunkIndexerDiscoverySecret": {
-            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
-            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
-            "Description": "Security key used for communication between your forwarders and the cluster master. This value should also be used by forwarders in order to retrieve list of available peer nodes from cluster master. Must be at least 8 characters containing letters, numbers and symbols.",
-            "MaxLength": "32",
-            "MinLength": "8",
-            "NoEcho": "true",
-            "Type": "String"
-        },
-        "SplunkIndexerCount": {
-            "ConstraintDescription": "must be a valid number, 3-10",
-            "Default": "3",
-            "Description": "How many Splunk indexers to launch.  [3-10]",
-            "MaxValue": "10",
-            "MinValue": "3",
-            "Type": "Number"
-        },
-        "SplunkIndexerDiskSize": {
-            "ConstraintDescription": "must be a valid number, 50-16000",
-            "Default": "200",
-            "Description": "The size of the attached EBS volume to the Splunk indexers.  (in GB)",
-            "MaxValue": "16000",
-            "MinValue": "50",
-            "Type": "Number"
-        },
-        "SplunkLicenseBucket": {
-            "Default": "",
-            "Description": "Name of private S3 bucket with licenses to be accessed via authenticated requests",
-            "Type": "String"
-        },
-        "SplunkLicensePath": {
-            "Default": "",
-            "Description": "Path to license file in S3 Bucket (without leading '/')",
-            "Type": "String"
-        },
-        "SplunkReplicationFactor": {
-            "ConstraintDescription": "must be a valid number, 2-5",
-            "Default": "3",
-            "Description": "How many copies of data should be stored in the Splunk clusters",
-            "MaxValue": "5",
-            "MinValue": "2",
-            "Type": "Number"
-        },
-        "SplunkSecret": {
-            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
-            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
-            "Description": "Shared cluster secret for Search Head and Indexer clusters. Must be at least 8 characters containing letters, numbers and symbols.",
-            "MaxLength": "32",
-            "MinLength": "6",
-            "NoEcho": "true",
-            "Type": "String"
-        },
-        "HECClientLocation": {
-            "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
-            "ConstraintDescription": "Must be a valid IP range in x.x.x.x/x notation.  Use 0.0.0.0/0 for no restrictions.",
-            "Description": "The IP address range that is allowed to send data to Splunk HTTP Event Collector. Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
-            "MaxLength": "19",
-            "MinLength": "9",
-            "Type": "String"
-        },
-        "HTTPLocation": {
-            "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
-            "ConstraintDescription": "Must be a valid IP range in x.x.x.x/x notation.  Use 0.0.0.0/0 for no restrictions.",
-            "Description": "The IP address range that is allowed to connect to the Splunk web interface. Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
-            "MaxLength": "19",
-            "MinLength": "9",
-            "Type": "String"
-        },
-        "IndexerApps": {
-            "Description": "Comma separated list of URLs of Splunk App (or Add-on) tarballs (.spl) to pre-install on indexer(s)",
-            "Default": "",
-            "Type": "CommaDelimitedList"
-        },
-        "SearchHeadApps": {
-            "Description": "Comma separated list of URLs of Splunk App (or Add-on) tarballs (.spl) to pre-install on search head(s)",
-            "Default": "",
-            "Type": "CommaDelimitedList"
-        },
         "KeyDeLicense": {
             "Default": "",
             "Description": "Key used to de-license the PAN FW",
@@ -271,6 +134,32 @@
             "NoEcho": "true",
             "Type": "String"
         },
+        "LambdaSubnet1": {
+            "Description": "Lambda subnet 1",
+            "Type": "String"
+        },
+        "LambdaSubnet2": {
+            "Description": "Lambda subnet 2",
+            "Type": "String"
+        },
+        "LambdaSubnet3": {
+            "Default": "",
+            "Description": "Lambda subnet 3",
+            "Type": "String"
+        },
+        "MGMTSubnet1": {
+            "Description": "Management subnet 1",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "MGMTSubnet2": {
+            "Description": "Management subnet 2",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "MGMTSubnet3": {
+            "Default": "",
+            "Description": "Management subnet 3",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
         "MaximumInstancesASG": {
             "Default": "3",
             "Description": "Maximum number of VM-Series firewalls in the ASG",
@@ -288,6 +177,19 @@
             ],
             "Default": "Yes",
             "Description": "Yes = create AWS NAT Gateway in each AZ, No = Use EIPs (skip subnet CIDR for NAT/Lambda)",
+            "Type": "String"
+        },
+        "NATSubnet1": {
+            "Description": "NAT GW subnet 1",
+            "Type": "String"
+        },
+        "NATSubnet2": {
+            "Description": "NAT GW subnet 2",
+            "Type": "String"
+        },
+        "NATSubnet3": {
+            "Default": "",
+            "Description": "NAT GW subnet 3",
             "Type": "String"
         },
         "NumberOfAZs": {
@@ -318,6 +220,15 @@
             "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
             "Default": "paloaltonetworks/vmsfirewall/latest/",
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Type": "String"
+        },
+        "SHCEnabled": {
+            "AllowedValues": [
+                "yes",
+                "no"
+            ],
+            "Default": "no",
+            "Description": "Do you want to build a Splunk search head cluster?",
             "Type": "String"
         },
         "SSHLocation": {
@@ -354,77 +265,103 @@
             "Description": "The period in seconds over which the average statistic is applied. Must be multiple of 60",
             "Type": "String"
         },
-        "VPCCIDR": {
-            "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
-            "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x.",
-            "Default": "192.168.0.0/16",
-            "Description": "Enter the VPC CIDR that you want to use",
+        "SearchHeadApps": {
+            "Default": "",
+            "Description": "Comma separated list of URLs of Splunk App (or Add-on) tarballs (.spl) to pre-install on search head(s)",
+            "Type": "CommaDelimitedList"
+        },
+        "SearchHeadInstanceType": {
+            "AllowedValues": [
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "r4.large",
+                "r4.xlarge",
+                "r4.2xlarge",
+                "r4.4xlarge",
+                "r4.8xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type.",
+            "Default": "c4.xlarge",
+            "Description": "EC2 instance type for Splunk Search Heads",
             "Type": "String"
         },
-        "NATSubnet1": {
-            "Description": "NAT GW subnet 1",
+        "SplunkAdminPassword": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
+            "Description": "Admin password for Splunk. Must be at least 8 characters containing letters, numbers and symbols.",
+            "MaxLength": "32",
+            "MinLength": "6",
+            "NoEcho": "true",
             "Type": "String"
         },
-        "NATSubnet2": {
-            "Description": "NAT GW subnet 2",
+        "SplunkIndexerCount": {
+            "ConstraintDescription": "must be a valid number, 3-10",
+            "Default": "3",
+            "Description": "How many Splunk indexers to launch.  [3-10]",
+            "MaxValue": "10",
+            "MinValue": "3",
+            "Type": "Number"
+        },
+        "SplunkIndexerDiscoverySecret": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
+            "Description": "Security key used for communication between your forwarders and the cluster master. This value should also be used by forwarders in order to retrieve list of available peer nodes from cluster master. Must be at least 8 characters containing letters, numbers and symbols.",
+            "MaxLength": "32",
+            "MinLength": "8",
+            "NoEcho": "true",
             "Type": "String"
         },
-        "NATSubnet3": {
-            "Description": "NAT GW subnet 3",
-            "Type": "String",
-            "Default": ""
+        "SplunkIndexerDiskSize": {
+            "ConstraintDescription": "must be a valid number, 50-16000",
+            "Default": "200",
+            "Description": "The size of the attached EBS volume to the Splunk indexers.  (in GB)",
+            "MaxValue": "16000",
+            "MinValue": "50",
+            "Type": "Number"
         },
-        "LambdaSubnet1": {
-            "Description": "Lambda subnet 1",
+        "SplunkInstanceType": {
+            "AllowedValues": [
+                "c4.large",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "m4.10xlarge",
+                "r4.8xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type.",
+            "Default": "c4.large",
+            "Description": "Splunk Instance Type",
             "Type": "String"
         },
-        "LambdaSubnet2": {
-            "Description": "Lambda subnet 2",
+        "SplunkLicenseBucket": {
+            "Default": "",
+            "Description": "Name of private S3 bucket with licenses to be accessed via authenticated requests",
             "Type": "String"
         },
-        "LambdaSubnet3": {
-            "Description": "Lambda subnet 3",
-            "Type": "String",
-            "Default": ""
+        "SplunkLicensePath": {
+            "Default": "",
+            "Description": "Path to license file in S3 Bucket (without leading '/')",
+            "Type": "String"
         },
-        "MGMTSubnet1": {
-            "Description": "Management subnet 1",
-            "Type": "AWS::EC2::Subnet::Id"
+        "SplunkReplicationFactor": {
+            "ConstraintDescription": "must be a valid number, 2-5",
+            "Default": "3",
+            "Description": "How many copies of data should be stored in the Splunk clusters",
+            "MaxValue": "5",
+            "MinValue": "2",
+            "Type": "Number"
         },
-        "MGMTSubnet2": {
-            "Description": "Management subnet 2",
-            "Type": "AWS::EC2::Subnet::Id"
-        },
-        "MGMTSubnet3": {
-            "Description": "Management subnet 3",
-            "Type": "AWS::EC2::Subnet::Id",
-            "Default": ""
-        },
-        "TRUSTSubnet1": {
-            "Description": "Trust subnet 1",
-            "Type": "AWS::EC2::Subnet::Id"
-        },
-        "TRUSTSubnet2": {
-            "Description": "Trust subnet 2",
-            "Type": "AWS::EC2::Subnet::Id"
-        },
-        "TRUSTSubnet3": {
-            "Description": "Trust subnet 3",
-            "Type": "AWS::EC2::Subnet::Id",
-            "Default": ""
-        },
-        "UNTRUSTSubnet1": {
-            "Description": "Untrust subnet 1",
-            "Type": "AWS::EC2::Subnet::Id"
-        },
-        "UNTRUSTSubnet2": {
-            "Description": "Untrust subnet 2",
-            "Type": "AWS::EC2::Subnet::Id"
-        },
-        "UNTRUSTSubnet3": {
-            "Description": "Untrust subnet 3",
-            "Type": "AWS::EC2::Subnet::Id",
-            "Default": ""
+        "SplunkSecret": {
+            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
+            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
+            "Description": "Shared cluster secret for Search Head and Indexer clusters. Must be at least 8 characters containing letters, numbers and symbols.",
+            "MaxLength": "32",
+            "MinLength": "6",
+            "NoEcho": "true",
+            "Type": "String"
         },
         "SplunkSubnet1": {
             "Description": "Splunk subnet 1",
@@ -435,9 +372,72 @@
             "Type": "AWS::EC2::Subnet::Id"
         },
         "SplunkSubnet3": {
+            "Default": "",
             "Description": "Splunk subnet 3",
-            "Type": "AWS::EC2::Subnet::Id",
-            "Default": ""
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "SplunkSyslogDiskSize": {
+            "ConstraintDescription": "must be a valid number, 100-16000",
+            "Default": "100",
+            "Description": "The size of the attached EBS volume to the Splunk syslog aggregator s.  (in GB)",
+            "MaxValue": "16000",
+            "MinValue": "100",
+            "Type": "Number"
+        },
+        "SplunkSyslogInstanceCount": {
+            "ConstraintDescription": "must be a valid number, 2-10",
+            "Default": "2",
+            "Description": "How many Splunk syslog-ng servers to launch.  [2-10]",
+            "MaxValue": "10",
+            "MinValue": "2",
+            "Type": "Number"
+        },
+        "SplunkSyslogInstanceType": {
+            "AllowedValues": [
+                "c4.large",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "m4.10xlarge",
+                "r4.8xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type.",
+            "Default": "c4.large",
+            "Description": "Splunk Syslog Instance Type",
+            "Type": "String"
+        },
+        "TRUSTSubnet1": {
+            "Description": "Trust subnet 1",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "TRUSTSubnet2": {
+            "Description": "Trust subnet 2",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "TRUSTSubnet3": {
+            "Default": "",
+            "Description": "Trust subnet 3",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "UNTRUSTSubnet1": {
+            "Description": "Untrust subnet 1",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "UNTRUSTSubnet2": {
+            "Description": "Untrust subnet 2",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "UNTRUSTSubnet3": {
+            "Default": "",
+            "Description": "Untrust subnet 3",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "VPCCIDR": {
+            "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+            "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x.",
+            "Default": "192.168.0.0/16",
+            "Description": "Enter the VPC CIDR that you want to use",
+            "Type": "String"
         },
         "VPCID": {
             "Description": "VPC ID",
@@ -539,74 +539,26 @@
                 }
             ],
             "ParameterLabels": {
-                "SplunkSyslogInstanceType": {
-                    "default": "Syslog Server Instance Type"
-                },
-                "SplunkSyslogInstanceCount": {
-                    "default": "Number of Syslog Servers"
-                },
-                "SplunkSyslogDiskSize": {
-                    "default": "Splunk Syslog Server Disk Size"
-                },
-                "SplunkIndexerDiscoverySecret": {
-                    "default": "Splunk Indexer Discovery Secret"
-                },
-                "SearchHeadInstanceType": {
-                    "default": "Search Head Instance Type"
-                },
-                "SplunkLicensePath": {
-                    "default": "Splunk License file path"
-                },
-                "SearchHeadApps": {
-                    "default": "Search Head Apps S3 URL"
-                },
-                "IndexerInstanceType": {
-                    "default": "Splunk Indexer Instance Type"
-                },
-                "IndexerApps": {
-                    "default": "Indexer Apps S3 URL"
-                },
-                "HECClientLocation": {
-                    "default": "HEC Client Location CIDR Block"
-                },
-                "SplunkSecret": {
-                    "default": "Splunk secret"
-                },
-                "SplunkReplicationFactor": {
-                    "default": "Splunk Index Replication Factor"
-                },
-                "SplunkLicenseBucket": {
-                    "default": "Splunk License S3 Bucket"
-                },
-                "SplunkIndexerDiskSize": {
-                    "default": "Splunk Indexer Disk Size"
-                },
-                "SplunkIndexerCount": {
-                    "default": "Number of Indexers"
-                },
-                "SplunkAdminPassword": {
-                    "default": "Splunk Enterprise Admin Password"
-                },
-                "SHCEnabled": {
-                    "default": "Enable Search Head Cluster"
-                },
-                "HTTPLocation": {
-                    "default": "HTTP CIDR Block"
-                },
-                "SplunkInstanceType": {
-                    "default": "Splunk Enterprise Instance Type"
-                },
-                "PanFWLicenseType": {
-                    "default": "Firewall License Type"
-                },
                 "ELBName": {
                     "default": "Name of External Load Balancer"
                 },
                 "FWInstanceType": {
                     "default": "Firewall Instance size"
                 },
+                "HECClientLocation": {
+                    "default": "HEC Client Location CIDR Block"
+                },
+                "HTTPLocation": {
+                    "default": "HTTP CIDR Block"
+                },
                 "ILBName": {
                     "default": "Name of Internal Load Balancer"
+                },
+                "IndexerApps": {
+                    "default": "Indexer Apps S3 URL"
+                },
+                "IndexerInstanceType": {
+                    "default": "Splunk Indexer Instance Type"
                 },
                 "InstanceType": {
                     "default": "Instance Type of Web Servers behind ILB"
@@ -635,11 +587,17 @@
                 "NumberOfAZs": {
                     "default": "Number of AZ for deployment:"
                 },
+                "PanFWLicenseType": {
+                    "default": "Firewall License Type"
+                },
                 "QSS3BucketName": {
                     "default": "Quick Start S3 Bucket Name"
                 },
                 "QSS3KeyPrefix": {
                     "default": "Quick Start S3 Key Prefix"
+                },
+                "SHCEnabled": {
+                    "default": "Enable Search Head Cluster"
                 },
                 "SSHLocation": {
                     "default": "SSH From:"
@@ -656,6 +614,48 @@
                 "ScalingPeriod": {
                     "default": "Choose time in seconds for Scaling Period:"
                 },
+                "SearchHeadApps": {
+                    "default": "Search Head Apps S3 URL"
+                },
+                "SearchHeadInstanceType": {
+                    "default": "Search Head Instance Type"
+                },
+                "SplunkAdminPassword": {
+                    "default": "Splunk Enterprise Admin Password"
+                },
+                "SplunkIndexerCount": {
+                    "default": "Number of Indexers"
+                },
+                "SplunkIndexerDiscoverySecret": {
+                    "default": "Splunk Indexer Discovery Secret"
+                },
+                "SplunkIndexerDiskSize": {
+                    "default": "Splunk Indexer Disk Size"
+                },
+                "SplunkInstanceType": {
+                    "default": "Splunk Enterprise Instance Type"
+                },
+                "SplunkLicenseBucket": {
+                    "default": "Splunk License S3 Bucket"
+                },
+                "SplunkLicensePath": {
+                    "default": "Splunk License file path"
+                },
+                "SplunkReplicationFactor": {
+                    "default": "Splunk Index Replication Factor"
+                },
+                "SplunkSecret": {
+                    "default": "Splunk secret"
+                },
+                "SplunkSyslogDiskSize": {
+                    "default": "Splunk Syslog Server Disk Size"
+                },
+                "SplunkSyslogInstanceCount": {
+                    "default": "Number of Syslog Servers"
+                },
+                "SplunkSyslogInstanceType": {
+                    "default": "Syslog Server Instance Type"
+                },
                 "VPCCIDR": {
                     "default": "CIDR Block for the VPC:"
                 }
@@ -663,7 +663,7 @@
         }
     },
     "Conditions": {
-      	"GovCloudCondition": {
+        "GovCloudCondition": {
             "Fn::Equals": [
                 {
                     "Ref": "AWS::Region"
@@ -689,9 +689,9 @@
         }
     },
     "Resources": {
-    	"CreateBootstrapBucketStack": {
-    		"Type": "AWS::CloudFormation::Stack",
-    		"Properties": {
+        "CreateBootstrapBucketStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
                 "TemplateURL": {
                     "Fn::Sub": [
                         "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/s3-bucket.template",
@@ -716,10 +716,10 @@
                     }
                 }
             }
-    	},
-      	"PanBootstrapBucketStack": {
-    		"Type": "AWS::CloudFormation::Stack",
-    		"Properties": {
+        },
+        "PanBootstrapBucketStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
                 "TemplateURL": {
                     "Fn::Sub": [
                         "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/bootstrap-bucket.template",
@@ -737,9 +737,9 @@
                 "Parameters": {
                     "MasterS3Bucket": {
                         "Fn::GetAtt": [
-		                    "CreateBootstrapBucketStack",
-		                    "Outputs.BootstrapS3Bucket"
-		                ]
+                            "CreateBootstrapBucketStack",
+                            "Outputs.BootstrapS3Bucket"
+                        ]
                     },
                     "QSS3BucketName": {
                         "Ref": "QSS3BucketName"
@@ -749,9 +749,9 @@
                     },
                     "SplunkHostname": {
                         "Fn::GetAtt": [
-		                    "SyslogStack",
-		                    "Outputs.PANSyslogTarget"
-		                ]
+                            "SyslogStack",
+                            "Outputs.PANSyslogTarget"
+                        ]
                     },
                     "SplunkPort": "514",
                     "SplunkTransport": "TCP"
@@ -761,11 +761,11 @@
                 "CreateBootstrapBucketStack",
                 "SyslogStack"
             ]
-    	},
-      	"SyslogStack": {
-      		"Type": "AWS::CloudFormation::Stack",
-      		"Properties": {
-            	"TemplateURL": {
+        },
+        "SyslogStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {
                     "Fn::Sub": [
                         "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/syslog.template",
                         {
@@ -780,7 +780,7 @@
                     ]
                 },
                 "Parameters": {
-                	"VPCID": {
+                    "VPCID": {
                         "Ref": "VPCID"
                     },
                     "VPCCIDR": {
@@ -807,16 +807,16 @@
                         "Ref": "NumberOfAZs"
                     },
                     "SplunkSyslogInstanceType": {
-                    	"Ref": "SplunkSyslogInstanceType"
+                        "Ref": "SplunkSyslogInstanceType"
                     },
                     "SplunkIndexerDiscoverySecret": {
-                    	"Ref": "SplunkIndexerDiscoverySecret"
+                        "Ref": "SplunkIndexerDiscoverySecret"
                     },
                     "ClusterMasterManagementURL": {
-                    	"Fn::GetAtt": [
-	                     	"SplunkStack",
-                      		"Outputs.ClusterMasterManagementURL"
-                    	]
+                        "Fn::GetAtt": [
+                            "SplunkStack",
+                            "Outputs.ClusterMasterManagementURL"
+                        ]
                     },
                     "QSS3BucketName": {
                         "Ref": "QSS3BucketName"
@@ -825,24 +825,24 @@
                         "Ref": "QSS3KeyPrefix"
                     },
                     "SSHClientLocation": {
-                    	"Ref": "SSHLocation"
+                        "Ref": "SSHLocation"
                     },
                     "KeyName": {
-                    	"Ref": "KeyName"
+                        "Ref": "KeyName"
                     },
                     "SplunkAdminPassword": {
-                    	"Ref": "SplunkAdminPassword"
+                        "Ref": "SplunkAdminPassword"
                     },
                     "SplunkSyslogInstanceCount": {
-                    	"Ref": "SplunkSyslogInstanceCount"
+                        "Ref": "SplunkSyslogInstanceCount"
                     },
                     "SplunkSyslogDiskSize": {
-                    	"Ref": "SplunkSyslogDiskSize"
+                        "Ref": "SplunkSyslogDiskSize"
                     }
                 }
             }
-      	},
-      	"SplunkStack": {
+        },
+        "SplunkStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -934,13 +934,17 @@
                     "IndexerApps": {
                         "Fn::Join": [
                             ",",
-                            { "Ref": "IndexerApps" }
+                            {
+                                "Ref": "IndexerApps"
+                            }
                         ]
                     },
                     "SearchHeadApps": {
                         "Fn::Join": [
                             ",",
-                            { "Ref": "SearchHeadApps" }
+                            {
+                                "Ref": "SearchHeadApps"
+                            }
                         ]
                     },
                     "QSS3BucketName": {
@@ -953,7 +957,7 @@
                 "TimeoutInMinutes": "60"
             }
         },
-      	"WebserverStack": {
+        "WebserverStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -998,73 +1002,72 @@
                         "Ref": "VPCID"
                     },
                     "AZSubnetIDUntrust": {
-                    	"Fn::If": [
-                    		"CreateSubnetAz3",
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "UNTRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "UNTRUSTSubnet2"
-		                                },
-		                                {
-		                                    "Ref": "UNTRUSTSubnet3"
-		                                }
-		                            ]
-		                        ]
-                    		},
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "UNTRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "UNTRUSTSubnet2"
-		                                }
-		                            ]
-		                        ]
-                    		}
-                    	]
-                        
+                        "Fn::If": [
+                            "CreateSubnetAz3",
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "UNTRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "UNTRUSTSubnet2"
+                                        },
+                                        {
+                                            "Ref": "UNTRUSTSubnet3"
+                                        }
+                                    ]
+                                ]
+                            },
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "UNTRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "UNTRUSTSubnet2"
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
                     },
                     "AZSubnetIDTrust": {
-                    	"Fn::If": [
-                    		"CreateSubnetAz3",
-                    		{
-	                    		 "Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "TRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "TRUSTSubnet2"
-		                                },
-		                                {
-		                                    "Ref": "TRUSTSubnet3"
-		                                }
-		                            ]
-		                        ]
-                    		},
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "TRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "TRUSTSubnet2"
-		                                }
-		                            ]
-		                        ]
-                    		}
-                    	]
+                        "Fn::If": [
+                            "CreateSubnetAz3",
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "TRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "TRUSTSubnet2"
+                                        },
+                                        {
+                                            "Ref": "TRUSTSubnet3"
+                                        }
+                                    ]
+                                ]
+                            },
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "TRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "TRUSTSubnet2"
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
                     },
                     "KeyName": {
                         "Ref": "KeyName"
@@ -1078,7 +1081,7 @@
                 }
             }
         },
-      	"FirewallMasterStack": {
+        "FirewallMasterStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -1107,9 +1110,9 @@
                     },
                     "MasterS3Bucket": {
                         "Fn::GetAtt": [
-		                    "CreateBootstrapBucketStack",
-		                    "Outputs.BootstrapS3Bucket"
-		                ]
+                            "CreateBootstrapBucketStack",
+                            "Outputs.BootstrapS3Bucket"
+                        ]
                     },
                     "SSHLocation": {
                         "Ref": "SSHLocation"
@@ -1124,108 +1127,106 @@
                         "Ref": "VPCID"
                     },
                     "AZSubnetIDMgmt": {
-                    	"Fn::If": [
-                    		"CreateSubnetAz3",
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "MGMTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "MGMTSubnet2"
-		                                },
-		                                {
-		                                    "Ref": "MGMTSubnet3"
-		                                }
-		                            ]
-		                        ]
-                    		},
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "MGMTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "MGMTSubnet2"
-		                                }
-		                            ]
-		                        ]
-                    		}
-                    	]
-                        
+                        "Fn::If": [
+                            "CreateSubnetAz3",
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "MGMTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "MGMTSubnet2"
+                                        },
+                                        {
+                                            "Ref": "MGMTSubnet3"
+                                        }
+                                    ]
+                                ]
+                            },
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "MGMTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "MGMTSubnet2"
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
                     },
                     "AZSubnetIDUntrust": {
-                    	"Fn::If": [
-                    		"CreateSubnetAz3",
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "UNTRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "UNTRUSTSubnet2"
-		                                },
-		                                {
-		                                    "Ref": "UNTRUSTSubnet3"
-		                                }
-		                            ]
-		                        ]
-                    		},
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "UNTRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "UNTRUSTSubnet2"
-		                                }
-		                            ]
-		                        ]
-                    		}
-                    	]
-                        
+                        "Fn::If": [
+                            "CreateSubnetAz3",
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "UNTRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "UNTRUSTSubnet2"
+                                        },
+                                        {
+                                            "Ref": "UNTRUSTSubnet3"
+                                        }
+                                    ]
+                                ]
+                            },
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "UNTRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "UNTRUSTSubnet2"
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
                     },
                     "AZSubnetIDTrust": {
-                    	"Fn::If": [
-                    		"CreateSubnetAz3",
-                    		{
-	                    		 "Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "TRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "TRUSTSubnet2"
-		                                },
-		                                {
-		                                    "Ref": "TRUSTSubnet3"
-		                                }
-		                            ]
-		                        ]
-                    		},
-                    		{
-                    			"Fn::Join": [
-		                            ",",
-		                            [
-		                                {
-		                                    "Ref": "TRUSTSubnet1"
-		                                },
-		                                {
-		                                    "Ref": "TRUSTSubnet2"
-		                                }
-		                            ]
-		                        ]
-                    		}
-                    	]
+                        "Fn::If": [
+                            "CreateSubnetAz3",
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "TRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "TRUSTSubnet2"
+                                        },
+                                        {
+                                            "Ref": "TRUSTSubnet3"
+                                        }
+                                    ]
+                                ]
+                            },
+                            {
+                                "Fn::Join": [
+                                    ",",
+                                    [
+                                        {
+                                            "Ref": "TRUSTSubnet1"
+                                        },
+                                        {
+                                            "Ref": "TRUSTSubnet2"
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
                     },
                     "KeyName": {
                         "Ref": "KeyName"
@@ -1264,84 +1265,88 @@
                         "Ref": "NATGateway"
                     },
                     "AZSubnetIDNATGW": {
-                    	"Fn::If": [
-                    		"NATGatewayRequired",
-                    		{
-                    			"Fn::If": [
-		                    		"CreateSubnetAz3",
-		                    		{
-			                    		 "Fn::Join": [
-				                            ",",
-				                            [
-				                                {
-				                                    "Ref": "NATSubnet1"
-				                                },
-				                                {
-				                                    "Ref": "NATSubnet2"
-				                                },
-				                                {
-				                                    "Ref": "NATSubnet3"
-				                                }
-				                            ]
-				                        ]
-		                    		},
-		                    		{
-		                    			"Fn::Join": [
-				                            ",",
-				                            [
-				                                {
-				                                    "Ref": "NATSubnet1"
-				                                },
-				                                {
-				                                    "Ref": "NATSubnet2"
-				                                }
-				                            ]
-				                        ]
-		                    		}
-		                    	]
-                    		},
-                    		{"Ref" : "AWS::NoValue"}
-                    	]
+                        "Fn::If": [
+                            "NATGatewayRequired",
+                            {
+                                "Fn::If": [
+                                    "CreateSubnetAz3",
+                                    {
+                                        "Fn::Join": [
+                                            ",",
+                                            [
+                                                {
+                                                    "Ref": "NATSubnet1"
+                                                },
+                                                {
+                                                    "Ref": "NATSubnet2"
+                                                },
+                                                {
+                                                    "Ref": "NATSubnet3"
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    {
+                                        "Fn::Join": [
+                                            ",",
+                                            [
+                                                {
+                                                    "Ref": "NATSubnet1"
+                                                },
+                                                {
+                                                    "Ref": "NATSubnet2"
+                                                }
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Ref": "AWS::NoValue"
+                            }
+                        ]
                     },
                     "AZSubnetIDLambda": {
-                    	"Fn::If": [
-                    		"NATGatewayRequired",
-                    		{
-	                    		"Fn::If": [
-		                    		"CreateSubnetAz3",
-		                    		{
-			                    		 "Fn::Join": [
-				                            ",",
-				                            [
-				                                {
-				                                    "Ref": "LambdaSubnet1"
-				                                },
-				                                {
-				                                    "Ref": "LambdaSubnet2"
-				                                },
-				                                {
-				                                    "Ref": "LambdaSubnet3"
-				                                }
-				                            ]
-				                        ]
-		                    		},
-		                    		{
-		                    			"Fn::Join": [
-				                            ",",
-				                            [
-				                                {
-				                                    "Ref": "LambdaSubnet1"
-				                                },
-				                                {
-				                                    "Ref": "LambdaSubnet2"
-				                                }
-				                            ]
-				                        ]
-		                    		}
-		                    	]
-                    		},
-                    		{"Ref" : "AWS::NoValue"}
-                    	]
+                        "Fn::If": [
+                            "NATGatewayRequired",
+                            {
+                                "Fn::If": [
+                                    "CreateSubnetAz3",
+                                    {
+                                        "Fn::Join": [
+                                            ",",
+                                            [
+                                                {
+                                                    "Ref": "LambdaSubnet1"
+                                                },
+                                                {
+                                                    "Ref": "LambdaSubnet2"
+                                                },
+                                                {
+                                                    "Ref": "LambdaSubnet3"
+                                                }
+                                            ]
+                                        ]
+                                    },
+                                    {
+                                        "Fn::Join": [
+                                            ",",
+                                            [
+                                                {
+                                                    "Ref": "LambdaSubnet1"
+                                                },
+                                                {
+                                                    "Ref": "LambdaSubnet2"
+                                                }
+                                            ]
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Ref": "AWS::NoValue"
+                            }
+                        ]
                     },
                     "KeyDeLicense": {
                         "Ref": "KeyDeLicense"
