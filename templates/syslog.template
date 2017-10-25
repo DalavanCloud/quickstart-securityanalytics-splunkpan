@@ -260,14 +260,12 @@
         },
       "CfnUser": {
         "Type": "AWS::IAM::User",
-        "Condition": "ConfigureLicense",
         "Properties": {
         "Path": "/"
       }
     },
     "CfnKeys": {
       "Type": "AWS::IAM::AccessKey",
-      "Condition": "ConfigureLicense",
       "Properties": {
         "UserName": {
           "Ref": "CfnUser"
