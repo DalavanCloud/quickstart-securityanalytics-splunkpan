@@ -258,6 +258,63 @@
                 ]
             }
         },
+      "CfnUser": {
+        "Type": "AWS::IAM::User",
+        "Condition": "ConfigureLicense",
+        "Properties": {
+        "Path": "/"
+      }
+    },
+    "CfnKeys": {
+      "Type": "AWS::IAM::AccessKey",
+      "Condition": "ConfigureLicense",
+      "Properties": {
+        "UserName": {
+          "Ref": "CfnUser"
+        }
+      }
+    },
+    "BucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Version": "2008-10-17",
+          "Id": "MyPolicy",
+          "Statement": [
+            {
+              "Sid": "ReadAccess",
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "QSS3BucketName"
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CfnUser",
+                    "Arn"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "Bucket": {
+          "Ref": "QSS3BucketName"
+        }
+      }
+    },
         "SplunkSyslogLaunchConfiguration": {
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Metadata": {
@@ -326,7 +383,9 @@
                                 },
                                 "mode": "000755",
                                 "owner": "root",
-                                "group": "root"
+                                "group": "root",
+                                "authentication": "S3AccessCreds"
+
                             },
                             "/tmp/splunk-pan-syslog-app.tar.gz": {
                                 "source": {
@@ -414,8 +473,28 @@
                             }
                         }
                     }
+                },
+                "AWS::CloudFormation::Authentication": {
+                    "S3AccessCreds": {
+                        "type": "S3",
+                        "accessKeyId": {
+                            "Ref": "CfnKeys"
+                        },
+                        "secretKey": {
+                            "Fn::GetAtt": [
+                                "CfnKeys",
+                                "SecretAccessKey"
+                            ]
+                        },
+                        "buckets": [
+                        {
+                            "Ref": "QSS3BucketName"
+                        }
+                        ]
+                    }
                 }
-            },
+            }
+        },
             "Properties": {
                 "AssociatePublicIpAddress": true,
                 "BlockDeviceMappings": [
@@ -552,8 +631,7 @@
                     }
                 ]
             }
-        }
-    },
+        },
     "Conditions": {
         "Create3AZ": {
             "Fn::Equals": [
