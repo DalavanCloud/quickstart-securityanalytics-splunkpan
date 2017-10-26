@@ -491,8 +491,7 @@
                         ]
                     }
                 }
-            }
-        },
+            },
             "Properties": {
                 "AssociatePublicIpAddress": true,
                 "BlockDeviceMappings": [
@@ -629,14 +628,15 @@
                     }
                 ]
             }
-        },
+        }
+    },
     "Conditions": {
         "Create3AZ": {
             "Fn::Equals": [
                 {
                     "Ref": "NumberOfAZs"
                 },
-                "3"
+                    "3"
             ]
         }
     },
