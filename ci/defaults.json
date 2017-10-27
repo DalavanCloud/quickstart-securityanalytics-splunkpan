@@ -34,5 +34,9 @@
   {
     "ParameterKey": "SplunkSecret",
     "ParameterValue": "$[alfred_genpass_10]"
+  },
+  {
+    "ParameterKey": "KeyPANWPanorama",
+    "ParameterValue": ""
   }
 ]
