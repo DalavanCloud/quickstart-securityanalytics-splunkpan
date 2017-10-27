@@ -1,0 +1,38 @@
+[
+  {
+    "ParameterKey": "AvailabilityZones",
+    "ParameterValue": "$[alfred_genaz_2]"
+  },
+  {
+    "ParameterKey": "HECClientLocation",
+    "ParameterValue": "192.168.0.0/16"
+  },
+  {
+    "ParameterKey": "HTTPLocation",
+    "ParameterValue": "192.168.0.0/16"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "$[alfred_getkeypair]"
+  },
+  {
+    "ParameterKey": "NATGateway",
+    "ParameterValue": "No"
+  },
+  {
+    "ParameterKey": "SSHLocation",
+    "ParameterValue": "192.168.0.0/16"
+  },
+  {
+    "ParameterKey": "SplunkAdminPassword",
+    "ParameterValue": "$[alfred_genpass_10]"
+  },
+  {
+    "ParameterKey": "SplunkIndexerDiscoverySecret",
+    "ParameterValue": "$[alfred_genpass_10]"
+  },
+  {
+    "ParameterKey": "SplunkSecret",
+    "ParameterValue": "$[alfred_genpass_10]"
+  }
+]

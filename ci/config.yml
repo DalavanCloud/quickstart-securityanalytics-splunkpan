@@ -1,5 +1,5 @@
 global:
-  marketplace-ami: false
+  marketplace-ami: true
   owner: quickstart-eng@amazon.com
   qsname: quickstart-securityanalytics-splunkpan
   regions:
@@ -20,8 +20,7 @@ global:
  
 tests:
   quickstart-securityanalytics-splunkpant1:
-    parameter_input: quickstart-securityanalytics-splunkpan-example-params1.json
-    template_file: quickstart-securityanalytics-splunkpan-example1.template
-  quickstart-securityanalytics-splunkpant2:
-    parameter_input: quickstart-securityanalytics-splunkpan-example-params2.json
-    template_file: quickstart-securityanalytics-splunkpan-example2.template
+    parameter_input: defaults.json
+    template_file: master.template
+    regions:
+      - us-west-1
