@@ -258,59 +258,67 @@
                 ]
             }
         },
-        "CfnUser": {
-            "Type": "AWS::IAM::User",
-            "Properties": {
-                "Path": "/"
-            }
+        "SysngMainLogGroup": {
+            "Type": "AWS::Logs::LogGroup"
         },
-        "CfnKeys": {
-            "Type": "AWS::IAM::AccessKey",
+        "NewIamInstanceRole": {
+            "Type": "AWS::IAM::Role",
             "Properties": {
-                "UserName": {
-                    "Ref": "CfnUser"
-                }
-            }
-        },
-        "BucketPolicy": {
-            "Type": "AWS::S3::BucketPolicy",
-            "Properties": {
-                "PolicyDocument": {
-                    "Version": "2008-10-17",
-                    "Id": "MyPolicy",
+                "AssumeRolePolicyDocument": {
                     "Statement": [
                         {
-                            "Sid": "ReadAccess",
-                            "Action": [
-                                "s3:GetObject"
-                            ],
                             "Effect": "Allow",
-                            "Resource": {
-                                "Fn::Join": [
-                                    "",
-                                    [
-                                        "arn:aws:s3:::",
-                                        {
-                                            "Ref": "QSS3BucketName"
-                                        },
-                                        "/*"
-                                    ]
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
                                 ]
                             },
-                            "Principal": {
-                                "AWS": {
-                                    "Fn::GetAtt": [
-                                        "CfnUser",
-                                        "Arn"
-                                    ]
-                                }
-                            }
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
                         }
                     ]
                 },
-                "Bucket": {
-                    "Ref": "QSS3BucketName"
-                }
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "Instance-Limited-Role",
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents",
+                                        "logs:DescribeLogStreams"
+                                    ],
+                                    "Resource": {
+                                        "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${SysngMainLogGroup}:*"
+                                    }
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:GetObject"
+                                    ],
+                                    "Resource": "arn:aws:s3:::quickstart-ci-media/splunk/splunk-uf.rpm"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "NewIamInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "NewIamInstanceRole"
+                    }
+                ]
             }
         },
         "SplunkSyslogLaunchConfiguration": {
@@ -363,22 +371,7 @@
                                 "group": "root"
                             },
                             "/tmp/splunk-uf.rpm": {
-                                "source": {
-                                    "Fn::Join": [
-                                        "",
-                                        [
-                                            "https://",
-                                            {
-                                                "Ref": "QSS3BucketName"
-                                            },
-                                            ".s3.amazonaws.com/",
-                                            {
-                                                "Ref": "QSS3KeyPrefix"
-                                            },
-                                            "assets/splunk-uf.rpm"
-                                        ]
-                                    ]
-                                },
+                                "source": "https://s3.amazonaws.com/quickstart-ci-media/splunk/splunk-uf.rpm",
                                 "mode": "000755",
                                 "owner": "root",
                                 "group": "root",
@@ -474,20 +467,9 @@
                 "AWS::CloudFormation::Authentication": {
                     "S3AccessCreds": {
                         "type": "S3",
-                        "accessKeyId": {
-                            "Ref": "CfnKeys"
-                        },
-                        "secretKey": {
-                            "Fn::GetAtt": [
-                                "CfnKeys",
-                                "SecretAccessKey"
-                            ]
-                        },
-                        "buckets": [
-                            {
-                                "Ref": "QSS3BucketName"
-                            }
-                        ]
+                        "roleName": {
+                            "Ref": "NewIamInstanceRole"
+                        }
                     }
                 }
             },
@@ -512,6 +494,9 @@
                         "Ref": "SplunkSyslogSecurityGroup"
                     }
                 ],
+                "IamInstanceProfile": {
+                    "Ref": "NewIamInstanceProfile"
+                },
                 "ImageId": {
                     "Fn::FindInMap": [
                         "AWSAMIRegionMap",
