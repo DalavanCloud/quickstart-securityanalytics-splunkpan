@@ -406,6 +406,10 @@
             "Description": "Splunk Syslog Instance Type",
             "Type": "String"
         },
+        "SplunkUFLocation": {
+            "Description": "S3 location for Splunk Universal Forwarder (e.g. https://s3.amazonaws.com/splunk-uf-bucket/splunk-uf.rpm",
+            "Type": "String"
+        },
         "TRUSTSubnet1": {
             "Description": "Trust subnet 1",
             "Type": "AWS::EC2::Subnet::Id"
@@ -510,6 +514,7 @@
                         "HECClientLocation",
                         "IndexerApps",
                         "SearchHeadApps",
+                        "SplunkUFLocation",
                         "IndexerInstanceType",
                         "SearchHeadInstanceType",
                         "SplunkIndexerDiscoverySecret",
@@ -655,6 +660,9 @@
                 },
                 "SplunkSyslogInstanceType": {
                     "default": "Syslog Server Instance Type"
+                },
+                "SplunkUFLocation": {
+                	"default": "Splunk Universal Forwarder location"
                 },
                 "VPCCIDR": {
                     "default": "CIDR Block for the VPC:"
@@ -838,6 +846,9 @@
                     },
                     "SplunkSyslogDiskSize": {
                         "Ref": "SplunkSyslogDiskSize"
+                    },
+                    "SplunkUFLocation": {
+                        "Ref": "SplunkUFLocation"
                     }
                 }
             }

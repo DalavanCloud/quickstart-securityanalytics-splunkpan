@@ -98,6 +98,10 @@
             "Description": "EC2 instance type for syslog-ng servers.",
             "Type": "String"
         },
+        "SplunkUFLocation": {
+            "Description": "S3 location for Splunk Universal Forwarder (e.g. https://s3.amazonaws.com/splunk-uf-bucket/splunk-uf.rpm",
+            "Type": "String"
+        },
         "VPCCIDR": {
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x.",
@@ -371,7 +375,9 @@
                                 "group": "root"
                             },
                             "/tmp/splunk-uf.rpm": {
-                                "source": "https://s3.amazonaws.com/quickstart-ci-media/splunk/splunk-uf.rpm",
+                                "source": { 
+                                	"Ref": "SplunkUFLocation" 
+                            	},
                                 "mode": "000755",
                                 "owner": "root",
                                 "group": "root",
