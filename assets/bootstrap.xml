@@ -397,7 +397,6 @@
                   <accept-dhcp-domain>no</accept-dhcp-domain>
                 </dhcp-client>
               </type>
-              <op-command-modes>mgmt-interface-swap</op-command-modes>
             </initcfg>
           </management>
         </setting>
