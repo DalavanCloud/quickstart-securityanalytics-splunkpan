@@ -305,15 +305,6 @@
             "MinValue": "3",
             "Type": "Number"
         },
-        "SplunkIndexerDiscoverySecret": {
-            "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
-            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
-            "Description": "Security key used for communication between your forwarders and the cluster master. This value should also be used by forwarders in order to retrieve list of available peer nodes from cluster master. Must be at least 8 characters containing letters, numbers and symbols.",
-            "MaxLength": "32",
-            "MinLength": "8",
-            "NoEcho": "true",
-            "Type": "String"
-        },
         "SplunkIndexerDiskSize": {
             "ConstraintDescription": "must be a valid number, 50-16000",
             "Default": "200",
@@ -517,7 +508,6 @@
                         "SplunkUFLocation",
                         "IndexerInstanceType",
                         "SearchHeadInstanceType",
-                        "SplunkIndexerDiscoverySecret",
                         "SplunkSyslogDiskSize",
                         "SplunkSyslogInstanceCount",
                         "SplunkSyslogInstanceType"
@@ -630,9 +620,6 @@
                 },
                 "SplunkIndexerCount": {
                     "default": "Number of Indexers"
-                },
-                "SplunkIndexerDiscoverySecret": {
-                    "default": "Splunk Indexer Discovery Secret"
                 },
                 "SplunkIndexerDiskSize": {
                     "default": "Splunk Indexer Disk Size"
@@ -818,7 +805,7 @@
                         "Ref": "SplunkSyslogInstanceType"
                     },
                     "SplunkIndexerDiscoverySecret": {
-                        "Ref": "SplunkIndexerDiscoverySecret"
+                        "Ref": "SplunkSecret"
                     },
                     "ClusterMasterManagementURL": {
                         "Fn::GetAtt": [
@@ -910,7 +897,7 @@
                         "Ref": "SplunkSecret"
                     },
                     "SplunkIndexerDiscoverySecret": {
-                        "Ref": "SplunkIndexerDiscoverySecret"
+                        "Ref": "SplunkSecret"
                     },
                     "SplunkLicenseBucket": {
                         "Ref": "SplunkLicenseBucket"
