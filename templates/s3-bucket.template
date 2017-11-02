@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Creates VPC, Subnets, Route Tables, SG, Classic ELBs, ASG for Webservers and Lambda Infrastructure for the VM-Series firewall",
+    "Description": "Creates VM-Series Firewall Bootstrap S3 bucket.",
     "Parameters": {
         "MasterS3Bucket": {
             "Default": "pan",

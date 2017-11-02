@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "syslog-ng deployment to support Splunk/PAN Quickstart.",
+    "Description": "Create Syslog-ng cluster to receive logs from firewall and send it to Splunk Indexers.",
     "Parameters": {
         "ClusterMasterManagementURL": {
             "Default": "",
