@@ -756,6 +756,37 @@
                 "SyslogStack"
             ]
         },
+        "DelayStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {
+                    "Fn::Sub": [
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/delay-download.template",
+                        {
+                            "QSS3Region": {
+                                "Fn::If": [
+                                    "GovCloudCondition",
+                                    "s3-us-gov-west-1",
+                                    "s3"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Parameters": {
+                    "SourceS3Bucket": {
+                        "Fn::GetAtt": [
+                            "CreateBootstrapBucketStack",
+                            "Outputs.BootstrapS3Bucket"
+                        ]
+                    }
+                }
+            },
+            "DependsOn": [
+                "CreateBootstrapBucketStack",
+                "PanBootstrapBucketStack"
+            ]
+        },
         "SyslogStack": {
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
@@ -1353,7 +1384,8 @@
             "DependsOn": [
                 "WebserverStack",
                 "PanBootstrapBucketStack",
-                "CreateBootstrapBucketStack"
+                "CreateBootstrapBucketStack",
+                "DelayStack"
             ]
         }
     },
