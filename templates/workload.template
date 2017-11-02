@@ -535,7 +535,7 @@
             ],
             "ParameterLabels": {
                 "ELBName": {
-                    "default": "Name of External Load Balancer"
+                    "default": "External Load Balancer Name"
                 },
                 "FWInstanceType": {
                     "default": "Firewall Instance size"
@@ -547,40 +547,40 @@
                     "default": "HTTP CIDR Block"
                 },
                 "ILBName": {
-                    "default": "Name of Internal Load Balancer"
+                    "default": "Internal Load Balancer Name"
                 },
                 "IndexerApps": {
-                    "default": "Indexer Apps S3 URL"
+                    "default": "Splunk Indexer Apps S3 URL"
                 },
                 "IndexerInstanceType": {
                     "default": "Splunk Indexer Instance Type"
                 },
                 "InstanceType": {
-                    "default": "Instance Type of Web Servers behind ILB"
+                    "default": "Web Servers Instance Type"
                 },
                 "KeyDeLicense": {
-                    "default": "Key used to de-license the FW"
+                    "default": "Key used to de-license the Firewall"
                 },
                 "KeyName": {
-                    "default": "Key pair:"
+                    "default": "Key Name"
                 },
                 "KeyPANWFirewall": {
-                    "default": "API Key for Firewall:"
+                    "default": "API Key for Firewall"
                 },
                 "KeyPANWPanorama": {
-                    "default": "API Key for Panorama:"
+                    "default": "API Key for Panorama"
                 },
                 "MaximumInstancesASG": {
-                    "default": "Maximum VM-Series Instances:"
+                    "default": "Maximum Firewall Instances"
                 },
                 "MinInstancesASG": {
-                    "default": "Minimum VM-Series Instances:"
+                    "default": "Minimum Firewall Instances"
                 },
                 "NATGateway": {
-                    "default": "Do you want to create AWS NAT Gateway in each Availability Zones (AZ)?"
+                    "default": "Create AWS NAT Gateway in each Availability Zones?"
                 },
                 "NumberOfAZs": {
-                    "default": "Number of AZ for deployment:"
+                    "default": "Number of Availability Zones for deployment"
                 },
                 "PanFWLicenseType": {
                     "default": "Firewall License Type"
@@ -592,28 +592,28 @@
                     "default": "Quick Start S3 Key Prefix"
                 },
                 "SHCEnabled": {
-                    "default": "Enable Search Head Cluster"
+                    "default": "Enable Splunk Search Head Cluster"
                 },
                 "SSHLocation": {
-                    "default": "SSH From:"
+                    "default": "SSH Location"
                 },
                 "ScaleDownThreshold": {
-                    "default": "ScaleDown threshold value in percentage/value:"
+                    "default": "ScaleDown threshold value in percentage/value"
                 },
                 "ScaleUpThreshold": {
-                    "default": "ScaleUp threshold value in percentage/value:"
+                    "default": "ScaleUp threshold value in percentage/value"
                 },
                 "ScalingParameter": {
-                    "default": "Choose your Scaling Parameter:"
+                    "default": "Scaling Parameter"
                 },
                 "ScalingPeriod": {
-                    "default": "Choose time in seconds for Scaling Period:"
+                    "default": "Time in seconds for Scaling Period"
                 },
                 "SearchHeadApps": {
-                    "default": "Search Head Apps S3 URL"
+                    "default": "Splunk Search Head Apps S3 URL"
                 },
                 "SearchHeadInstanceType": {
-                    "default": "Search Head Instance Type"
+                    "default": "Splunk Search Head Instance Type"
                 },
                 "SplunkAdminPassword": {
                     "default": "Splunk Enterprise Admin Password"
@@ -649,10 +649,10 @@
                     "default": "Syslog Server Instance Type"
                 },
                 "SplunkUFLocation": {
-                	"default": "Splunk Universal Forwarder location"
+                    "default": "Splunk Universal Forwarder location"
                 },
                 "VPCCIDR": {
-                    "default": "CIDR Block for the VPC:"
+                    "default": "VPC CIDR Block"
                 }
             }
         }

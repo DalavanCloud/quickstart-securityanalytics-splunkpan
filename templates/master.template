@@ -407,20 +407,20 @@
             "ParameterGroups": [
                 {
                     "Label": {
-                        "default": "VPC Configuration"
+                        "default": "Network Configuration"
                     },
                     "Parameters": [
+                        "AvailabilityZones",
+                        "NumberOfAZs",
                         "VPCName",
                         "VPCCIDR",
                         "MgmtSubnetIpBlocks",
                         "UntrustSubnetIpBlocks",
                         "TrustSubnetIpBlocks",
-                        "SplunkSubnetIpBlocks",
-                        "NATGateway",
                         "NATGWSubnetIpBlocks",
                         "LambdaSubnetIpBlocks",
-                        "NumberOfAZs",
-                        "AvailabilityZones"
+                        "SplunkSubnetIpBlocks",
+                        "NATGateway"
                     ]
                 },
                 {
@@ -437,7 +437,7 @@
                 },
                 {
                     "Label": {
-                        "default": "VM-Series API Key"
+                        "default": "VM-Series Firewall API Key"
                     },
                     "Parameters": [
                         "KeyPANWFirewall",
@@ -446,7 +446,7 @@
                 },
                 {
                     "Label": {
-                        "default": "Firewall Auto Scaling Configuration"
+                        "default": "VM-Series Firewall Auto Scaling Configuration"
                     },
                     "Parameters": [
                         "ScalingParameter",
@@ -463,24 +463,24 @@
                     },
                     "Parameters": [
                         "SplunkInstanceType",
-                        "HTTPLocation",
+                        "SearchHeadInstanceType",
+                        "SplunkSyslogInstanceType",
+                        "IndexerInstanceType",
                         "SHCEnabled",
-                        "SplunkAdminPassword",
                         "SplunkIndexerCount",
                         "SplunkIndexerDiskSize",
-                        "SplunkLicenseBucket",
-                        "SplunkLicensePath",
                         "SplunkReplicationFactor",
-                        "SplunkSecret",
+                        "SplunkSyslogInstanceCount",
+                        "SplunkSyslogDiskSize",
                         "IndexerApps",
                         "SearchHeadApps",
                         "SplunkUFLocation",
-                        "IndexerInstanceType",
-                        "SearchHeadInstanceType",
-                        "SplunkSyslogInstanceType",
-                        "SplunkSyslogInstanceCount",
-                        "SplunkSyslogDiskSize",
+                        "SplunkLicenseBucket",
+                        "SplunkLicensePath",
+                        "SplunkAdminPassword",
+                        "SplunkSecret",
                         "SplunkIndexerDiscoverySecret",
+                        "HTTPLocation",
                         "HECClientLocation"
                     ]
                 },
@@ -506,13 +506,13 @@
             ],
             "ParameterLabels": {
                 "AvailabilityZones": {
-                    "default": "Select list of AZ:"
+                    "default": "Availability Zones"
                 },
                 "ELBName": {
-                    "default": "Name of External Load Balancer:"
+                    "default": "External Load Balancer Name"
                 },
                 "FWInstanceType": {
-                    "default": "Firewall Instance size:"
+                    "default": "Firewall Instance size"
                 },
                 "HECClientLocation": {
                     "default": "HEC Client Location CIDR Block"
@@ -521,49 +521,49 @@
                     "default": "HTTP CIDR Block"
                 },
                 "ILBName": {
-                    "default": "Name of Internal Load Balancer:"
+                    "default": "Internal Load Balancer Name"
                 },
                 "IndexerApps": {
-                    "default": "Indexer Apps S3 URL"
+                    "default": "Splunk Indexer Apps S3 URL"
                 },
                 "IndexerInstanceType": {
                     "default": "Splunk Indexer Instance Type"
                 },
                 "InstanceType": {
-                    "default": "Instance Type of Web Servers behind ILB:"
+                    "default": "Web Servers Instance Type"
                 },
                 "KeyDeLicense": {
-                    "default": "Key used to de-license the FW"
+                    "default": "Key used to de-license the Firewall"
                 },
                 "KeyName": {
-                    "default": "Key pair:"
+                    "default": "Key Name"
                 },
                 "KeyPANWFirewall": {
-                    "default": "API Key for Firewall:"
+                    "default": "API Key for Firewall"
                 },
                 "KeyPANWPanorama": {
-                    "default": "API Key for Panorama:"
+                    "default": "API Key for Panorama"
                 },
                 "LambdaSubnetIpBlocks": {
-                    "default": "Lambda Subnet CIDR Block:"
+                    "default": "Lambda Subnet CIDR Block"
                 },
                 "MaximumInstancesASG": {
-                    "default": "Maximum VM-Series Instances:"
+                    "default": "Maximum Firewall Instances"
                 },
                 "MgmtSubnetIpBlocks": {
-                    "default": "Management Subnet CIDR Block:"
+                    "default": "Management Subnet CIDR Block"
                 },
                 "MinInstancesASG": {
-                    "default": "Minimum VM-Series Instances:"
+                    "default": "Minimum Firewall Instances"
                 },
                 "NATGWSubnetIpBlocks": {
-                    "default": "NAT Gateway Subnet CIDR Block:"
+                    "default": "NAT Gateway Subnet CIDR Block"
                 },
                 "NATGateway": {
-                    "default": "Do you want to create AWS NAT Gateway in each Availability Zones (AZ)?"
+                    "default": "Create AWS NAT Gateway in each Availability Zones?"
                 },
                 "NumberOfAZs": {
-                    "default": "Number of AZ for deployment:"
+                    "default": "Number of Availability Zones for deployment"
                 },
                 "PanFWLicenseType": {
                     "default": "Firewall License Type"
@@ -575,34 +575,34 @@
                     "default": "Quick Start S3 Key Prefix"
                 },
                 "SHCEnabled": {
-                    "default": "Enable Search Head Cluster"
+                    "default": "Enable Splunk Search Head Cluster"
                 },
                 "SSHLocation": {
-                    "default": "SSH From:"
+                    "default": "SSH Location"
                 },
                 "ScaleDownThreshold": {
-                    "default": "ScaleDown threshold value in percentage/value:"
+                    "default": "ScaleDown threshold value in percentage/value"
                 },
                 "ScaleUpThreshold": {
-                    "default": "ScaleUp threshold value in percentage/value:"
+                    "default": "ScaleUp threshold value in percentage/value"
                 },
                 "ScalingParameter": {
-                    "default": "Choose your Scaling Parameter:"
+                    "default": "Scaling Parameter"
                 },
                 "ScalingPeriod": {
-                    "default": "Choose time in seconds for Scaling Period:"
+                    "default": "Time in seconds for Scaling Period"
                 },
                 "SearchHeadApps": {
-                    "default": "Search Head Apps S3 URL"
+                    "default": "SplunkSearch Head Apps S3 URL"
                 },
                 "SearchHeadInstanceType": {
-                    "default": "Search Head Instance Type"
+                    "default": "Splunk Search Head Instance Type"
                 },
                 "SplunkAdminPassword": {
                     "default": "Splunk Enterprise Admin Password"
                 },
                 "SplunkIndexerCount": {
-                    "default": "Number of Indexers"
+                    "default": "Number of Splunk Indexers"
                 },
                 "SplunkIndexerDiscoverySecret": {
                     "default": "Splunk Indexer Discovery Secret"
@@ -638,19 +638,19 @@
                     "default": "Syslog Server Instance Type"
                 },
                 "SplunkUFLocation": {
-                	"default": "Splunk Universal Forwarder location"
+                    "default": "Splunk Universal Forwarder location"
                 },
                 "TrustSubnetIpBlocks": {
-                    "default": "Trust Subnet CIDR Block:"
+                    "default": "Trust Subnet CIDR Block"
                 },
                 "UntrustSubnetIpBlocks": {
-                    "default": "Untrust Subnet CIDR Block:"
+                    "default": "Untrust Subnet CIDR Block"
                 },
                 "VPCCIDR": {
-                    "default": "CIDR Block for the VPC:"
+                    "default": "VPC CIDR Block"
                 },
                 "VPCName": {
-                    "default": "VPC Name:"
+                    "default": "VPC Name"
                 }
             }
         }

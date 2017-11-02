@@ -306,7 +306,7 @@
                                     "Action": [
                                         "s3:GetObject"
                                     ],
-                                    "Resource": "arn:aws:s3:::quickstart-ci-media/splunk/splunk-uf.rpm"
+                                    "Resource": "arn:aws:s3:::*"
                                 }
                             ]
                         }
@@ -375,9 +375,9 @@
                                 "group": "root"
                             },
                             "/tmp/splunk-uf.rpm": {
-                                "source": { 
-                                	"Ref": "SplunkUFLocation" 
-                            	},
+                                "source": {
+                                    "Ref": "SplunkUFLocation"
+                                },
                                 "mode": "000755",
                                 "owner": "root",
                                 "group": "root",
