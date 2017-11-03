@@ -23,7 +23,7 @@
             "Type": "String"
         },
         "SourceS3Bucket": {
-            "Default": "pan-boot-euca1",
+            "Default": "pan-bootstrap-objects",
             "Description": "Enter the name of the Bootstrap S3 bucket for the VM-Series firewall",
             "MaxLength": "63",
             "MinLength": "3",

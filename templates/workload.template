@@ -175,7 +175,7 @@
                 "Yes",
                 "No"
             ],
-            "Default": "Yes",
+            "Default": "No",
             "Description": "Yes = create AWS NAT Gateway in each AZ, No = Use EIPs (skip subnet CIDR for NAT/Lambda)",
             "Type": "String"
         },
