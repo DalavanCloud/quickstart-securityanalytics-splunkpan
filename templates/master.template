@@ -164,7 +164,7 @@
                 "Yes",
                 "No"
             ],
-            "Default": "Yes",
+            "Default": "No",
             "Description": "Yes = create AWS NAT Gateway in each AZ, No = Use EIPs (skip subnet CIDR for NAT/Lambda)",
             "Type": "String"
         },
@@ -533,7 +533,7 @@
                     "default": "Web Servers Instance Type"
                 },
                 "KeyDeLicense": {
-                    "default": "Key used to de-license the Firewall"
+                    "default": "Key used to de-license the Firewall (Optional)"
                 },
                 "KeyName": {
                     "default": "Key Name"
@@ -542,7 +542,7 @@
                     "default": "API Key for Firewall"
                 },
                 "KeyPANWPanorama": {
-                    "default": "API Key for Panorama"
+                    "default": "API Key for Panorama (Optional)"
                 },
                 "LambdaSubnetIpBlocks": {
                     "default": "Lambda Subnet CIDR Block"
@@ -614,10 +614,10 @@
                     "default": "Splunk Enterprise Instance Type"
                 },
                 "SplunkLicenseBucket": {
-                    "default": "Splunk License S3 Bucket"
+                    "default": "Splunk License S3 Bucket (Optional)"
                 },
                 "SplunkLicensePath": {
-                    "default": "Splunk License file path"
+                    "default": "Splunk License file path (Optional)"
                 },
                 "SplunkReplicationFactor": {
                     "default": "Splunk Index Replication Factor"
@@ -1729,6 +1729,24 @@
             "Description": "Scaling Parameter you have selected",
             "Value": {
                 "Ref": "ScalingParameter"
+            }
+        },
+        "SearchHeadURL": {
+            "Description": "Splunk Enterprise - Search Head URL",
+            "Value": {
+                "Fn::GetAtt": [
+                    "SplunkStack",
+                    "Outputs.SearchHeadURL"
+                ]
+            }
+        },
+        "ClusterMasterURL": {
+            "Description": "Splunk Enterprise - Cluster Master URL",
+            "Value": {
+                "Fn::GetAtt": [
+                    "SplunkStack",
+                    "Outputs.ClusterMasterURL"
+                ]
             }
         }
     }
