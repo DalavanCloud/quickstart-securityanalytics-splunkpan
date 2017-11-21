@@ -122,21 +122,20 @@
         "KeyPANWFirewall": {
             "AllowedPattern": "[\\S0-9a-zA-Z]+",
             "ConstraintDescription": "The PAN FW API key is required.",
-            "Default": "LUFRPT1Zd2pYUGpkMUNrVEZlb3hROEQyUm95dXNGRkU9N0d4RGpTN2VZaVZYMVVoS253U0p6dlk3MkM0SDFySEh2UUR4Y3hzK2g3ST0=",
-            "Description": "API Key associated to username/password of the VM-Series Firewall. By default it is pandemo/demopassword",
+            "Description": "API Key associated to username/password of the VM-Series Firewall.",
             "MaxLength": "128",
             "MinLength": "3",
             "NoEcho": "true",
             "Type": "String"
         },
         "KeyPANWPanorama": {
-            "Description": "API Key associated to username/password of the Panorama. By default it is admin/admin",
+            "Description": "API Key associated to username/password of the Panorama.",
             "NoEcho": "true",
             "Type": "String"
         },
         "LambdaSubnetIpBlocks": {
             "Default": "192.168.200.0/24, 192.168.201.0/24, 192.168.202.0/24",
-            "Description": "Lambda Funcion Subnets for AZ: Comma-delimited list of CIDR blocks only if NAT Gateway is needed",
+            "Description": "Comma-delimited list of CIDR blocks to use for the public subnets for the NAT gateways. This parameter is used only if NATGateway parameter is selected as 'Yes'",
             "Type": "CommaDelimitedList"
         },
         "MaximumInstancesASG": {
@@ -210,7 +209,7 @@
         "SSHLocation": {
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x.",
-            "Description": "Restrict SSH access to the VM-Series firewall (by default can be accessed from anywhere)",
+            "Description": "CIDR IP range that is permitted to access the VM-Series firewall instances via SSH. Should be set to a trusted IP range.",
             "MaxLength": "18",
             "MinLength": "9",
             "Type": "String"
@@ -265,7 +264,7 @@
         },
         "SplunkAdminPassword": {
             "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
-            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
+            "ConstraintDescription": "Must be at least 6-32 characters containing letters, numbers and symbols.",
             "Description": "Admin password for Splunk. Must be at least 8 characters containing letters, numbers and symbols.",
             "MaxLength": "32",
             "MinLength": "6",
@@ -331,7 +330,7 @@
         },
         "SplunkSecret": {
             "AllowedPattern": "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*",
-            "ConstraintDescription": "Must be at least 8 characters containing letters, numbers and symbols.",
+            "ConstraintDescription": "Must be at least 6-32 characters containing letters, numbers and symbols.",
             "Description": "Shared cluster secret for Search Head and Indexer clusters. Must be at least 8 characters containing letters, numbers and symbols.",
             "MaxLength": "32",
             "MinLength": "6",
@@ -340,7 +339,7 @@
         },
         "SplunkSubnetIpBlocks": {
             "Default": "192.168.3.0/24, 192.168.13.0/24, 192.168.23.0/24",
-            "Description": "Trust subnet comma-delimited list of CIDR blocks",
+            "Description": "Comma-delimited list of CIDR blocks to use for the public subnets where the Splunk instances will be provisioned",
             "Type": "CommaDelimitedList"
         },
         "SplunkSyslogDiskSize": {
@@ -560,7 +559,7 @@
                     "default": "NAT Gateway Subnet CIDR Block"
                 },
                 "NATGateway": {
-                    "default": "Create AWS NAT Gateway in each Availability Zones?"
+                    "default": "Do you want to create AWS NAT Gateway in each Availability Zone (AZ)?"
                 },
                 "NumberOfAZs": {
                     "default": "Number of Availability Zones for deployment"
