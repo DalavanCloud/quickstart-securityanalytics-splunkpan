@@ -541,7 +541,7 @@
                     "default": "API Key for Firewall"
                 },
                 "KeyPANWPanorama": {
-                    "default": "API Key for Panorama (Optional)"
+                    "default": "API Key for Panorama"
                 },
                 "LambdaSubnetIpBlocks": {
                     "default": "Lambda Subnet CIDR Block"
