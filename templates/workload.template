@@ -122,42 +122,41 @@
         "KeyPANWFirewall": {
             "AllowedPattern": "[\\S0-9a-zA-Z]+",
             "ConstraintDescription": "The PAN FW API key is required.",
-            "Default": "LUFRPT1Zd2pYUGpkMUNrVEZlb3hROEQyUm95dXNGRkU9N0d4RGpTN2VZaVZYMVVoS253U0p6dlk3MkM0SDFySEh2UUR4Y3hzK2g3ST0=",
-            "Description": "API Key associated to username/password of the VM-Series Firewall. By default it is pandemo/demopassword",
+            "Description": "API Key associated to username/password of the VM-Series Firewall.",
             "MaxLength": "128",
             "MinLength": "3",
             "NoEcho": "true",
             "Type": "String"
         },
         "KeyPANWPanorama": {
-            "Description": "API Key associated to username/password of the Panorama. By default it is admin/admin",
+            "Description": "API Key associated to username/password of the Panorama.",
             "NoEcho": "true",
             "Type": "String"
         },
         "LambdaSubnet1": {
-            "Description": "Lambda subnet 1",
-            "Type": "String"
+            "Description": "First subnet to use for the lambda functions",
+            "Type": "AWS::EC2::Subnet::Id"
         },
         "LambdaSubnet2": {
-            "Description": "Lambda subnet 2",
-            "Type": "String"
+            "Description": "Second subnet to use for the lambda functions",
+            "Type": "AWS::EC2::Subnet::Id"
         },
         "LambdaSubnet3": {
             "Default": "",
-            "Description": "Lambda subnet 3",
+            "Description": "Third subnet to use for the lambda functions. Optional, used only if 3 availability zones are selected.",
             "Type": "String"
         },
         "MGMTSubnet1": {
-            "Description": "Management subnet 1",
+            "Description": "Subnet to use for first Management interface",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "MGMTSubnet2": {
-            "Description": "Management subnet 2",
+            "Description": "Subnet to use for second Management interface",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "MGMTSubnet3": {
             "Default": "",
-            "Description": "Management subnet 3",
+            "Description": "Subnet to use for third Management interface. Optional, used only if 3 availability zones are selected.",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "MaximumInstancesASG": {
@@ -180,16 +179,16 @@
             "Type": "String"
         },
         "NATSubnet1": {
-            "Description": "NAT GW subnet 1",
-            "Type": "String"
+            "Description": "Subnet to use for first NAT Gateway",
+            "Type": "AWS::EC2::Subnet::Id"
         },
         "NATSubnet2": {
-            "Description": "NAT GW subnet 2",
-            "Type": "String"
+            "Description": "Subnet to use for second NAT Gateway",
+            "Type": "AWS::EC2::Subnet::Id"
         },
         "NATSubnet3": {
             "Default": "",
-            "Description": "NAT GW subnet 3",
+            "Description": "Subnet to use for third NAT Gateway. Optional, used only if 3 availability zones are selected.",
             "Type": "String"
         },
         "NumberOfAZs": {
@@ -354,16 +353,16 @@
             "Type": "String"
         },
         "SplunkSubnet1": {
-            "Description": "Splunk subnet 1",
+            "Description": "First subnet to provision Splunk instances.",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "SplunkSubnet2": {
-            "Description": "Splunk subnet 2",
+            "Description": "Second subnet to provision Splunk instances.",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "SplunkSubnet3": {
             "Default": "",
-            "Description": "Splunk subnet 3",
+            "Description": "Third subnet to provision Splunk instances. Used only when 3 availability zones are selected.",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "SplunkSyslogDiskSize": {
@@ -401,35 +400,34 @@
             "Type": "String"
         },
         "TRUSTSubnet1": {
-            "Description": "Trust subnet 1",
+            "Description": "Subnet to use for the first Trust interface",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "TRUSTSubnet2": {
-            "Description": "Trust subnet 2",
+            "Description": "Subnet to use for the second Trust interface",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "TRUSTSubnet3": {
             "Default": "",
-            "Description": "Trust subnet 3",
+            "Description": "Subnet to use for the third Trust interface. Used only 3 availability zones are selected.",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "UNTRUSTSubnet1": {
-            "Description": "Untrust subnet 1",
+            "Description": "Subnet to use for the first Untrust interface. ",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "UNTRUSTSubnet2": {
-            "Description": "Untrust subnet 2",
+            "Description": "Subnet to use for the second Untrust interface. ",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "UNTRUSTSubnet3": {
             "Default": "",
-            "Description": "Untrust subnet 3",
+            "Description": "Subnet to use for the third Untrust interface. Used only 3 availability zones are selected.",
             "Type": "AWS::EC2::Subnet::Id"
         },
         "VPCCIDR": {
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x.",
-            "Default": "192.168.0.0/16",
             "Description": "Enter the VPC CIDR that you want to use",
             "Type": "String"
         },
@@ -449,7 +447,33 @@
                         "VPCCIDR",
                         "NATGateway",
                         "NumberOfAZs",
-                        "AvailabilityZones"
+                        "AvailabilityZones",
+                        "VPCID"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Subnet Configuration"
+                    },
+                    "Parameters": [
+                        "LambdaSubnet1",
+                        "LambdaSubnet2",
+                        "LambdaSubnet3",
+                        "MGMTSubnet1",
+                        "MGMTSubnet2",
+                        "MGMTSubnet3",
+                        "NATSubnet1",
+                        "NATSubnet2",
+                        "NATSubnet3",
+                        "SplunkSubnet1",
+                        "SplunkSubnet2",
+                        "SplunkSubnet3",
+                        "TRUSTSubnet1",
+                        "TRUSTSubnet2",
+                        "TRUSTSubnet3",
+                        "UNTRUSTSubnet1",
+                        "UNTRUSTSubnet2",
+                        "UNTRUSTSubnet3"
                     ]
                 },
                 {
@@ -533,6 +557,9 @@
                 }
             ],
             "ParameterLabels": {
+                "AvailabilityZones": {
+                    "default": "Select list of AZ:"
+                },
                 "ELBName": {
                     "default": "External Load Balancer Name"
                 },
@@ -576,7 +603,7 @@
                     "default": "Minimum Firewall Instances"
                 },
                 "NATGateway": {
-                    "default": "Create AWS NAT Gateway in each Availability Zones?"
+                    "default": "Do you want to create AWS NAT Gateway in each Availability Zone (AZ)?"
                 },
                 "NumberOfAZs": {
                     "default": "Number of Availability Zones for deployment"
@@ -651,7 +678,64 @@
                     "default": "Splunk Universal Forwarder location"
                 },
                 "VPCCIDR": {
-                    "default": "VPC CIDR Block"
+                    "default": "CIDR Block for the VPC:"
+                },
+                "VPCID": {
+                    "default": "VPC ID"
+                },
+                "LambdaSubnet1": {
+                    "default": "Lambda Function Subnet 1"
+                },
+                "LambdaSubnet2": {
+                    "default": "Lambda Function Subnet 2"
+                },
+                "LambdaSubnet3": {
+                    "default": "Lambda Function Subnet 3"
+                },
+                "MGMTSubnet1": {
+                    "default": "Management Subnet 1"
+                },
+                "MGMTSubnet2": {
+                    "default": "Management Subnet 2"
+                },
+                "MGMTSubnet3": {
+                    "default": "Management Subnet 3"
+                },
+                "NATSubnet1": {
+                    "default": "NAT Gateway Subnet 1"
+                },
+                "NATSubnet2": {
+                    "default": "NAT Gateway Subnet 2"
+                },
+                "NATSubnet3": {
+                    "default": "NAT Gateway Subnet 3"
+                },
+                "SplunkSubnet1": {
+                    "default": "Splunk Subnet 1"
+                },
+                "SplunkSubnet2": {
+                    "default": "Splunk Subnet 2"
+                },
+                "SplunkSubnet3": {
+                    "default": "Splunk Subnet 3"
+                },
+                "TRUSTSubnet1": {
+                    "default": "TRUST Subnet 1"
+                },
+                "TRUSTSubnet2": {
+                    "default": "TRUST Subnet 2"
+                },
+                "TRUSTSubnet3": {
+                    "default": "TRUST Subnet 3"
+                },
+                "UNTRUSTSubnet1": {
+                    "default": "UNTRUST Subnet 1"
+                },
+                "UNTRUSTSubnet2": {
+                    "default": "UNTRUST Subnet 2"
+                },
+                "UNTRUSTSubnet3": {
+                    "default": "UNTRUST Subnet 3"
                 }
             }
         }
