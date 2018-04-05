@@ -122,14 +122,15 @@
         "KeyPANWFirewall": {
             "AllowedPattern": "[\\S0-9a-zA-Z]+",
             "ConstraintDescription": "The PAN FW API key is required.",
-            "Description": "API Key associated to username/password of the VM-Series Firewall.",
+            "Default": "LUFRPT1Zd2pYUGpkMUNrVEZlb3hROEQyUm95dXNGRkU9N0d4RGpTN2VZaVZYMVVoS253U0p6dlk3MkM0SDFySEh2UUR4Y3hzK2g3ST0=",
+            "Description": "API Key associated to username/password of the VM-Series Firewall. By default it is pandemo/demopassword",
             "MaxLength": "128",
             "MinLength": "3",
             "NoEcho": "true",
             "Type": "String"
         },
         "KeyPANWPanorama": {
-            "Description": "API Key associated to username/password of the Panorama.",
+            "Description": "API Key associated to username/password (by default it is admin/admin) of the Panorama, if you are using Panorama for centralized management. Otherwise leave blank.",
             "NoEcho": "true",
             "Type": "String"
         },
