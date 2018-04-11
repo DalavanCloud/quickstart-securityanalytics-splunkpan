@@ -38,5 +38,9 @@
   {
     "ParameterKey": "KeyPANWPanorama",
     "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "SplunkUFLocation",
+    "ParameterValue": "https://s3.amazonaws.com/$[alfred_getmediabucket]/splunk/splunk-uf.rpm"
   }
 ]
